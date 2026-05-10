@@ -58,7 +58,7 @@
 // - user/session manager
 // - timeout handling
 
-#define FORGEUI_ENABLE_ADMIN_GATE          0
+#define FORGEUI_ENABLE_ADMIN_GATE          1
 #define FORGEUI_ADMIN_DEFAULT_PIN          "1234"
 
 // 0 = disabled
