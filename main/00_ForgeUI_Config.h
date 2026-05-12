@@ -81,12 +81,12 @@
 //   Nebula Blue
 //   Dark sharper industrial UI
 
-#define FORGEUI_STYLE_ATLAS_LIGHT          0
-#define FORGEUI_STYLE_NEBULA_BLUE          1
+#define FORGEUI_STYLE_ATLAS_LIGHT          0 // Do Not Change Un Header bellow to set
+#define FORGEUI_STYLE_NEBULA_BLUE          1 // Do Not Change Un Header bellow to set
 
 // Active Style
-//#define FORGEUI_STYLE_ACTIVE             FORGEUI_STYLE_ATLAS_LIGHT
-#define FORGEUI_STYLE_ACTIVE               FORGEUI_STYLE_NEBULA_BLUE
+#define FORGEUI_STYLE_ACTIVE             FORGEUI_STYLE_ATLAS_LIGHT
+//#define FORGEUI_STYLE_ACTIVE               FORGEUI_STYLE_NEBULA_BLUE
 
 
 // ============================================================
