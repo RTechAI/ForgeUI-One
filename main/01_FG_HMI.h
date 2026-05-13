@@ -40,6 +40,10 @@ extern "C" {
 // ============================================================
 
 void fg_hmi_init(void);
+void fg_hmi_go_dashboard(void);
+void fg_hmi_go_preop(void);
+void fg_hmi_go_system(void);
+void fg_hmi_go_admin(void);
 
 #ifdef __cplusplus
 }

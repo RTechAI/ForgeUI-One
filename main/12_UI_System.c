@@ -54,6 +54,8 @@
 #include "esp_log.h"
 #include "esp_err.h"
 #include "bsp/display.h"
+#include "05_FG_Icons.h"
+#include "01_FG_HMI.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -561,7 +563,7 @@ static void evt_apply_rtc(lv_event_t *e)
 #endif
 
 // ===== Build =====
-void ui_system_build(lv_obj_t *parent)
+static void ui_system_legacy_build(lv_obj_t *parent)
 {
     fg_style_apply_screen(parent);
 
@@ -576,13 +578,14 @@ void ui_system_build(lv_obj_t *parent)
     lv_obj_t *tile_brightness = fg_make_tile(parent, "Display Brightness", 48, 180);
 
     g_sys_brightness_value = lv_label_create(tile_brightness);
-    lv_label_set_text(g_sys_brightness_value, "100%");
+    lv_label_set_text(g_sys_brightness_value, "50%");
     fg_style_apply_label(g_sys_brightness_value);
 
     lv_obj_t *brightness_slider = lv_slider_create(tile_brightness);
     lv_obj_set_width(brightness_slider, lv_pct(100));
     lv_slider_set_range(brightness_slider, 10, 100);
-    lv_slider_set_value(brightness_slider, 100, LV_ANIM_OFF);
+    lv_slider_set_value(brightness_slider, 50, LV_ANIM_OFF);
+    bsp_display_brightness_set(50);
     lv_obj_add_event_cb(brightness_slider, evt_brightness_changed, LV_EVENT_VALUE_CHANGED, NULL);
 
     lv_obj_t *brightness_hint = lv_label_create(tile_brightness);
@@ -869,4 +872,77 @@ lv_obj_set_flex_align(
     lv_obj_center(btn_apply_lbl);
 
 #endif
+}
+
+static void evt_system_hub_admin(lv_event_t *e)
+{
+    LV_UNUSED(e);
+    fg_hmi_go_admin();
+}
+
+static void evt_system_hub_placeholder(lv_event_t *e)
+{
+    LV_UNUSED(e);
+    ESP_LOGI(TAG, "System hub card pressed");
+}
+
+static lv_obj_t *fg_make_hub_card(lv_obj_t *parent,
+                                  const char *label,
+                                  const void *icon,
+                                  lv_event_cb_t cb)
+{
+    lv_obj_t *btn = lv_button_create(parent);
+    fg_style_apply_tile(btn);
+
+    lv_obj_set_size(btn, 210, 170);
+
+    lv_obj_set_layout(btn, LV_LAYOUT_FLEX);
+    lv_obj_set_flex_flow(btn, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_flex_align(btn,
+                          LV_FLEX_ALIGN_CENTER,
+                          LV_FLEX_ALIGN_CENTER,
+                          LV_FLEX_ALIGN_CENTER);
+
+    lv_obj_add_event_cb(btn, cb, LV_EVENT_CLICKED, NULL);
+
+    lv_obj_t *img = lv_image_create(btn);
+    lv_image_set_src(img, icon);
+
+    lv_obj_t *txt = lv_label_create(btn);
+    lv_label_set_text(txt, label);
+    fg_style_apply_label(txt);
+    lv_obj_set_style_text_font(txt, &lv_font_montserrat_18, 0);
+
+    return btn;
+}
+
+void ui_system_build(lv_obj_t *parent)
+{
+    fg_style_apply_screen(parent);
+
+    lv_obj_set_style_pad_all(parent, 24, 0);
+
+    lv_obj_t *panel = lv_obj_create(parent);
+    fg_style_apply_tile(panel);
+
+    lv_obj_set_size(panel, lv_pct(100), lv_pct(100));
+    lv_obj_center(panel);
+
+    lv_obj_set_layout(panel, LV_LAYOUT_FLEX);
+    lv_obj_set_flex_flow(panel, LV_FLEX_FLOW_ROW_WRAP);
+
+    lv_obj_set_flex_align(panel,
+                          LV_FLEX_ALIGN_CENTER,
+                          LV_FLEX_ALIGN_CENTER,
+                          LV_FLEX_ALIGN_CENTER);
+
+    lv_obj_set_style_pad_row(panel, 24, 0);
+    lv_obj_set_style_pad_column(panel, 24, 0);
+
+    fg_make_hub_card(panel, "Brightness", fg_icon_brightness(), evt_system_hub_placeholder);
+    fg_make_hub_card(panel, "Sound",      fg_icon_sound(),      evt_system_hub_placeholder);
+    fg_make_hub_card(panel, "WiFi",       fg_icon_wifi(),       evt_system_hub_placeholder);
+    fg_make_hub_card(panel, "Storage",    fg_icon_sdcard(),     evt_system_hub_placeholder);
+    fg_make_hub_card(panel, "Time",       fg_icon_time(),       evt_system_hub_placeholder);
+    fg_make_hub_card(panel, "Admin",      fg_icon_admin(),      evt_system_hub_admin);
 }

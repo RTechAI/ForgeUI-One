@@ -83,10 +83,12 @@
 
 #define FORGEUI_STYLE_ATLAS_LIGHT          0 // Do Not Change Un Header bellow to set
 #define FORGEUI_STYLE_NEBULA_BLUE          1 // Do Not Change Un Header bellow to set
+#define FORGEUI_STYLE_REACTOR              2
 
 // Active Style
-#define FORGEUI_STYLE_ACTIVE             FORGEUI_STYLE_ATLAS_LIGHT
-//#define FORGEUI_STYLE_ACTIVE               FORGEUI_STYLE_NEBULA_BLUE
+//#define FORGEUI_STYLE_ACTIVE             FORGEUI_STYLE_ATLAS_LIGHT
+//#define FORGEUI_STYLE_ACTIVE             FORGEUI_STYLE_NEBULA_BLUE
+#define FORGEUI_STYLE_ACTIVE               FORGEUI_STYLE_REACTOR
 
 
 // ============================================================
@@ -209,3 +211,15 @@
 // Drawer alignment
 #define FORGEUI_STATUS_DRAWER_Y            80
 #define FORGEUI_STATUS_DRAWER_BOTTOM_GAP   20
+
+// ============================================================
+// ForgeUI Icon Sets
+// ============================================================
+
+#define FORGEUI_ICON_SET_LIGHT_32          0
+#define FORGEUI_ICON_SET_DARK_32           1
+#define FORGEUI_ICON_SET_LIGHT_48          2
+#define FORGEUI_ICON_SET_DARK_64          3
+
+// Active icon pack
+#define FORGEUI_ICON_SET_ACTIVE            FORGEUI_ICON_SET_DARK_64

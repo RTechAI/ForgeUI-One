@@ -41,7 +41,19 @@
 
 #include "14_UI_Header.h"
 #include "16_UI_Style.h"
+#include "00_ForgeUI_Config.h"
 
+
+// ============================================================
+// Local State
+// ============================================================
+
+static lv_obj_t *g_tabview = NULL;
+
+#define FG_TAB_DASHBOARD  0
+#define FG_TAB_PREOP      1
+#define FG_TAB_SYSTEM     2
+#define FG_TAB_ADMIN      3
 
 // ============================================================
 // ForgeUI HMI Init
@@ -62,7 +74,8 @@ void fg_hmi_init(void)
     // Main TabView
     // ========================================================
 
-    lv_obj_t *tabview = lv_tabview_create(scr);
+    g_tabview = lv_tabview_create(scr);
+    lv_obj_t *tabview = g_tabview;
 
     fg_style_apply_screen(tabview);
 
@@ -74,6 +87,11 @@ void fg_hmi_init(void)
     // ========================================================
 
     lv_obj_t *tab_bar = lv_tabview_get_tab_bar(tabview);
+
+    #if FORGEUI_STYLE_ACTIVE == FORGEUI_STYLE_REACTOR
+    lv_obj_add_flag(tab_bar, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_set_height(tab_bar, 0);
+#else
 
     fg_style_apply_panel(tab_bar);
 
@@ -105,8 +123,9 @@ void fg_hmi_init(void)
     // - future status icons
     // - admin/session indicators
 
-    fg_header_create(scr);
+#endif
 
+    fg_header_create(scr);
 
     // ========================================================
     // Tabs
@@ -136,4 +155,36 @@ void fg_hmi_init(void)
     ui_system_build(tab_system);
 
     ui_admin_build(tab_admin);
+}
+
+// ============================================================
+// HMI Navigation Helpers
+// ============================================================
+
+void fg_hmi_go_dashboard(void)
+{
+    if (g_tabview) {
+        lv_tabview_set_active(g_tabview, FG_TAB_DASHBOARD, LV_ANIM_OFF);
+    }
+}
+
+void fg_hmi_go_preop(void)
+{
+    if (g_tabview) {
+        lv_tabview_set_active(g_tabview, FG_TAB_PREOP, LV_ANIM_OFF);
+    }
+}
+
+void fg_hmi_go_system(void)
+{
+    if (g_tabview) {
+        lv_tabview_set_active(g_tabview, FG_TAB_SYSTEM, LV_ANIM_OFF);
+    }
+}
+
+void fg_hmi_go_admin(void)
+{
+    if (g_tabview) {
+        lv_tabview_set_active(g_tabview, FG_TAB_ADMIN, LV_ANIM_OFF);
+    }
 }
