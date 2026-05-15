@@ -1,27 +1,47 @@
 // ============================================================
-// ForgeUI Pre Operation Tab
+// ForgeUI Pre Operation UI
 // ============================================================
-// Optional workflow/application module.
+//
+// ForgeUI
+// Created by Scott Forster
+// Contact: forgeui.esp32@gmail.com
+//
+// Purpose:
+//
+// Optional workflow / application module.
 //
 // Current purpose:
-// - placeholder tab
+//
+// - placeholder workflow page
 // - future industrial workflow area
 // - ForkGuard-compatible expansion point
 //
 // Rules:
+//
 // - UI only
 // - no backend ownership
-// - no hardware init
+// - no hardware ownership
+// - no persistent runtime truth
 //
 // Future direction:
+//
 // - digital forms
-// - inspection flows
+// - inspection workflows
 // - checklist systems
 // - operator workflows
 // - telemetry-linked actions
+// - compliance capture
+// - guided workflow systems
 //
-// This module is intended to remain optional
-// and removable through future feature flags.
+// This module is intended to remain:
+//
+// - optional
+// - removable
+// - product configurable
+//
+// Future ownership should remain controlled
+// through ForgeUI feature/config layers.
+//
 // ============================================================
 
 #include "11_UI_PreOp.h"

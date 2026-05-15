@@ -1,29 +1,53 @@
 // ============================================================
-// ForgeUI Dashboard Tab
+// ForgeUI Dashboard UI
 // ============================================================
-// Dashboard landing page.
+//
+// ForgeUI
+// Created by Scott Forster
+// Contact: forgeui.esp32@gmail.com
+//
+// Purpose:
+//
+// Dashboard / home screen builder.
 //
 // Responsibilities:
-// - build the Dashboard tab UI
-// - provide a clean first-screen placeholder
-// - prove tab/theme/layout pipeline is alive
+//
+// - create Dashboard page content
+// - render launcher cards
+// - route user intent to top-level pages
+// - respect dashboard feature toggles
 //
 // Rules:
-// - no backend ownership here
-// - no hardware init here
-// - no long-running logic here
 //
-// Future direction:
-// - app status cards
-// - live system summary
-// - quick action tiles
-// - product/demo hero widgets
+// - no backend ownership
+// - no hardware ownership
+// - no system truth storage
+// - no direct hidden-tab manipulation outside HMI helpers
+//
+// Navigation ownership:
+//
+// Dashboard sends intent through:
+//
+//   fg_hmi_go_system()
+//   fg_hmi_go_admin()
+//
+// Current Reactor direction:
+//
+// Dashboard acts as the home launcher.
+// Cards/icons are primary navigation.
+// Hidden LVGL tabview remains the routing engine.
+//
+// ============================================================
+
+// ============================================================
+// ForgeUI Dashboard Tab
 // ============================================================
 
 #include "10_UI_Dashboard.h"
 #include "16_UI_Style.h"
 #include "05_FG_Icons.h"
 #include "01_FG_HMI.h"
+#include "00_ForgeUI_Config.h"
 
 
 // ============================================================
@@ -84,6 +108,8 @@ void ui_dashboard_build(lv_obj_t *parent)
                                0);
 
 
+#if FORGEUI_ENABLE_DASHBOARD_TILES
+
     // ========================================================
     // System Launcher Card
     // ========================================================
@@ -98,9 +124,9 @@ void ui_dashboard_build(lv_obj_t *parent)
     lv_obj_set_flex_flow(btn_system, LV_FLEX_FLOW_COLUMN);
 
     lv_obj_set_flex_align(btn_system,
-                      LV_FLEX_ALIGN_CENTER,
-                      LV_FLEX_ALIGN_CENTER,
-                      LV_FLEX_ALIGN_CENTER);
+                          LV_FLEX_ALIGN_CENTER,
+                          LV_FLEX_ALIGN_CENTER,
+                          LV_FLEX_ALIGN_CENTER);
 
 
     // ========================================================
@@ -108,9 +134,9 @@ void ui_dashboard_build(lv_obj_t *parent)
     // ========================================================
 
     lv_obj_add_event_cb(btn_system,
-                    evt_open_system,
-                    LV_EVENT_CLICKED,
-                    NULL);
+                        evt_open_system,
+                        LV_EVENT_CLICKED,
+                        NULL);
 
     lv_obj_t *img = lv_image_create(btn_system);
     lv_image_set_src(img, fg_icon_system());
@@ -119,6 +145,7 @@ void ui_dashboard_build(lv_obj_t *parent)
     lv_label_set_text(sys_lbl, "System");
     fg_style_apply_label(sys_lbl);
     lv_obj_set_style_text_font(sys_lbl, &lv_font_montserrat_18, 0);
+
 
     // ========================================================
     // Admin Launcher Card
@@ -134,9 +161,9 @@ void ui_dashboard_build(lv_obj_t *parent)
     lv_obj_set_flex_flow(btn_admin, LV_FLEX_FLOW_COLUMN);
 
     lv_obj_set_flex_align(btn_admin,
-                      LV_FLEX_ALIGN_CENTER,
-                      LV_FLEX_ALIGN_CENTER,
-                      LV_FLEX_ALIGN_CENTER);
+                          LV_FLEX_ALIGN_CENTER,
+                          LV_FLEX_ALIGN_CENTER,
+                          LV_FLEX_ALIGN_CENTER);
 
 
     // ========================================================
@@ -144,9 +171,9 @@ void ui_dashboard_build(lv_obj_t *parent)
     // ========================================================
 
     lv_obj_add_event_cb(btn_admin,
-                    evt_open_admin,
-                    LV_EVENT_CLICKED,
-                    NULL);
+                        evt_open_admin,
+                        LV_EVENT_CLICKED,
+                        NULL);
 
     lv_obj_t *admin_img = lv_image_create(btn_admin);
     lv_image_set_src(admin_img, fg_icon_admin());
@@ -156,13 +183,20 @@ void ui_dashboard_build(lv_obj_t *parent)
     fg_style_apply_label(admin_lbl);
     lv_obj_set_style_text_font(admin_lbl, &lv_font_montserrat_18, 0);
 
+#endif
+
+
     // ========================================================
     // Subtitle
     // ========================================================
 
     lv_obj_t *sub = lv_label_create(panel);
 
+#if FORGEUI_ENABLE_DASHBOARD_TILES
     lv_label_set_text(sub, "ForgeUI Dashboard module ready");
+#else
+    lv_label_set_text(sub, "Dashboard tiles disabled");
+#endif
 
     fg_style_apply_label_dim(sub);
 }

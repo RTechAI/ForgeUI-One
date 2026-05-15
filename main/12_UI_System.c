@@ -1,45 +1,74 @@
 
 // ============================================================
-// ForgeUI System Tab
+// ForgeUI System UI
 // ============================================================
-// Main runtime system/settings UI.
+//
+// ForgeUI
+// Created by Scott Forster
+// Contact: forgeui.esp32@gmail.com
+//
+// Purpose:
+//
+// Main runtime system/settings UI layer.
 //
 // Responsibilities:
+//
 // - display runtime system status
 // - expose user/system controls
-// - host feature demonstration tiles
-// - provide hardware proof controls
+// - host shared Reactor launch cards
+// - launch shared Reactor modals
+// - provide hardware/system proof controls
 //
 // Current Features:
+//
 // - display brightness
 // - audio test + volume
-// - hosted Wi-Fi manager
+// - hosted WiFi manager
 // - SD card management
 // - RTC date/time control
+// - Reactor modal launch system
 //
 // Rules:
+//
 // - UI only
-// - no low-level hardware init here
-// - backend modules own truth/state
-// - this layer renders + sends intent only
+// - no low-level hardware init
+// - no backend ownership
+// - no persistent runtime truth
+//
+// Backend modules own truth/state.
+// This layer renders state and sends intent only.
 //
 // Feature Ownership:
+//
 // Controlled through:
+//
 //   00_ForgeUI_Config.h
 //
 // Current Optional Modules:
+//
 // - FORGEUI_ENABLE_RTC
 // - FORGEUI_ENABLE_AUDIO
 // - FORGEUI_ENABLE_WIFI
 // - FORGEUI_ENABLE_SD
 //
+// Reactor Direction:
+//
+// System page is evolving into:
+//
+// - modular launcher hub
+// - appliance-style settings UI
+// - shared modal launch system
+//
 // Future Direction:
+//
 // - runtime themes
-// - firmware update tile
+// - firmware update tiles
 // - diagnostics
 // - telemetry panels
 // - admin settings
 // - user/session management
+// - customer/product modules
+//
 // ============================================================
 
 // ============================================================
@@ -49,6 +78,7 @@
 #include "12_UI_System.h"
 #include "00_ForgeUI_Config.h"
 #include "16_UI_Style.h"
+#include "17_UI_ReactorModal.h"
 
 #include "lvgl.h"
 #include "esp_log.h"
@@ -235,15 +265,30 @@ static void fg_wifi_ui_refresh(lv_timer_t *timer)
 {
     LV_UNUSED(timer);
 
-    if (g_wifi_status_lbl) {
-        lv_label_set_text_fmt(g_wifi_status_lbl, "Status: %s", fg_wifi_status_text());
+    if (!g_wifi_status_lbl ||
+        !g_wifi_ip_lbl)
+    {
+        return;
     }
 
-    if (g_wifi_ip_lbl) {
-        lv_label_set_text_fmt(g_wifi_ip_lbl, "IP: %s", fg_wifi_ip_text());
+    if (!lv_obj_is_valid(g_wifi_status_lbl) ||
+        !lv_obj_is_valid(g_wifi_ip_lbl))
+    {
+        return;
     }
 
-    if (g_wifi_dropdown && strcmp(fg_wifi_status_text(), "SCAN_DONE") == 0) {
+    lv_label_set_text_fmt(g_wifi_status_lbl,
+                          "Status: %s",
+                          fg_wifi_status_text());
+
+    lv_label_set_text_fmt(g_wifi_ip_lbl,
+                          "IP: %s",
+                          fg_wifi_ip_text());
+
+    if (g_wifi_dropdown &&
+        lv_obj_is_valid(g_wifi_dropdown) &&
+        strcmp(fg_wifi_status_text(), "SCAN_DONE") == 0)
+    {
         char ssids[12][33];
         char opts[512] = {0};
 
@@ -340,16 +385,33 @@ static void fg_sd_ui_refresh(lv_timer_t *timer)
 {
     LV_UNUSED(timer);
 
-    if (g_sd_status_lbl) {
-        lv_label_set_text_fmt(g_sd_status_lbl, "Status: %s", fg_sd_status_text());
+    if (!g_sd_status_lbl ||
+        !g_sd_action_lbl ||
+        !g_sd_size_lbl)
+    {
+        return;
     }
 
-    if (g_sd_size_lbl) {
-        lv_label_set_text(g_sd_size_lbl, fg_sd_size_text_get());
+    if (!lv_obj_is_valid(g_sd_status_lbl) ||
+        !lv_obj_is_valid(g_sd_action_lbl) ||
+        !lv_obj_is_valid(g_sd_size_lbl))
+    {
+        return;
     }
 
-    if (g_sd_action_lbl && !g_sd_safe_armed && !g_sd_reset_armed) {
-        lv_label_set_text_fmt(g_sd_action_lbl, "Last: %s", fg_sd_last_action_text());
+    lv_label_set_text_fmt(g_sd_status_lbl,
+                          "Status: %s",
+                          fg_sd_status_text());
+
+    lv_label_set_text(g_sd_size_lbl,
+                      fg_sd_size_text_get());
+
+    if (!g_sd_safe_armed &&
+        !g_sd_reset_armed)
+    {
+        lv_label_set_text_fmt(g_sd_action_lbl,
+                              "Last: %s",
+                              fg_sd_last_action_text());
     }
 }
 
@@ -916,6 +978,422 @@ static lv_obj_t *fg_make_hub_card(lv_obj_t *parent,
     return btn;
 }
 
+static void fg_system_modal_cleanup(void)
+{
+#if FORGEUI_ENABLE_WIFI
+    if (g_wifi_timer) {
+        lv_timer_delete(g_wifi_timer);
+        g_wifi_timer = NULL;
+    }
+
+    g_wifi_status_lbl = NULL;
+    g_wifi_ip_lbl     = NULL;
+    g_wifi_dropdown   = NULL;
+    g_wifi_pass_ta    = NULL;
+#endif
+
+#if FORGEUI_ENABLE_SD
+    if (g_sd_timer) {
+        lv_timer_delete(g_sd_timer);
+        g_sd_timer = NULL;
+    }
+
+    g_sd_status_lbl    = NULL;
+    g_sd_action_lbl    = NULL;
+    g_sd_size_lbl      = NULL;
+    g_sd_safe_btn_lbl  = NULL;
+    g_sd_list_lbl      = NULL;
+    g_sd_reset_btn_lbl = NULL;
+
+    g_sd_safe_armed  = false;
+    g_sd_reset_armed = false;
+#endif
+}
+
+static void evt_system_hub_brightness(lv_event_t *e)
+{
+    LV_UNUSED(e);
+
+     fg_system_modal_cleanup();
+
+    lv_obj_t *box =
+        fg_reactor_modal_open("Brightness",
+                              fg_icon_brightness());
+
+    g_sys_brightness_value = lv_label_create(box);
+    lv_label_set_text(g_sys_brightness_value, "50%");
+    fg_style_apply_label(g_sys_brightness_value);
+
+    lv_obj_t *slider = lv_slider_create(box);
+
+    lv_obj_set_width(slider, lv_pct(92));
+
+    lv_slider_set_range(slider, 10, 100);
+    lv_slider_set_value(slider, 50, LV_ANIM_OFF);
+
+    lv_obj_add_event_cb(slider,
+                        evt_brightness_changed,
+                        LV_EVENT_VALUE_CHANGED,
+                        NULL);
+
+    lv_obj_t *hint = lv_label_create(box);
+    lv_label_set_text(hint,
+                      "Live display brightness control");
+
+    fg_style_apply_label_dim(hint);
+}
+
+static void evt_system_hub_sound(lv_event_t *e)
+{
+    LV_UNUSED(e);
+
+     fg_system_modal_cleanup();
+
+    lv_obj_t *box =
+        fg_reactor_modal_open("Sound",
+                              fg_icon_sound());
+
+    lv_obj_t *status = lv_label_create(box);
+    lv_label_set_text(status, "Audio Ready");
+    fg_style_apply_label(status);
+
+    g_sys_sound_volume_value = lv_label_create(box);
+    lv_label_set_text(g_sys_sound_volume_value, "70%");
+    fg_style_apply_label(g_sys_sound_volume_value);
+
+    lv_obj_t *slider = lv_slider_create(box);
+
+    lv_obj_set_width(slider, lv_pct(92));
+
+    lv_slider_set_range(slider, 0, 100);
+    lv_slider_set_value(slider, g_sound_volume, LV_ANIM_OFF);
+
+    lv_obj_add_event_cb(slider,
+                        evt_sound_volume_changed,
+                        LV_EVENT_VALUE_CHANGED,
+                        NULL);
+
+    lv_obj_t *btn_test = lv_button_create(box);
+    fg_style_apply_button(btn_test);
+
+    lv_obj_set_size(btn_test, 180, 44);
+
+    lv_obj_add_event_cb(btn_test,
+                        evt_sound_test,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    lv_obj_t *lbl = lv_label_create(btn_test);
+    lv_label_set_text(lbl, "Speaker Test");
+    lv_obj_center(lbl);
+
+    lv_obj_t *hint = lv_label_create(box);
+
+    lv_label_set_text(hint,
+                      "Live audio volume control");
+
+    fg_style_apply_label_dim(hint);
+}
+
+#if FORGEUI_ENABLE_WIFI
+static void evt_system_hub_wifi(lv_event_t *e)
+{
+    LV_UNUSED(e);
+
+     fg_system_modal_cleanup();
+
+    lv_obj_t *box =
+        fg_reactor_modal_open("WiFi",
+                              fg_icon_wifi());
+
+    g_wifi_status_lbl = lv_label_create(box);
+    lv_label_set_text_fmt(g_wifi_status_lbl,
+                          "Status: %s",
+                          fg_wifi_status_text());
+    fg_style_apply_label(g_wifi_status_lbl);
+
+    g_wifi_ip_lbl = lv_label_create(box);
+    lv_label_set_text_fmt(g_wifi_ip_lbl,
+                          "IP: %s",
+                          fg_wifi_ip_text());
+    fg_style_apply_label_dim(g_wifi_ip_lbl);
+
+    lv_obj_t *btn_scan = lv_button_create(box);
+    fg_style_apply_button(btn_scan);
+    lv_obj_set_size(btn_scan, 180, 42);
+    lv_obj_add_event_cb(btn_scan,
+                        evt_wifi_scan,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    lv_obj_t *btn_scan_lbl = lv_label_create(btn_scan);
+    lv_label_set_text(btn_scan_lbl, "Scan WiFi");
+    lv_obj_center(btn_scan_lbl);
+
+    g_wifi_dropdown = lv_dropdown_create(box);
+    fg_style_apply_dropdown(g_wifi_dropdown);
+    lv_obj_set_width(g_wifi_dropdown, lv_pct(92));
+    lv_dropdown_set_options(g_wifi_dropdown, "No scan yet");
+
+    g_wifi_pass_ta = lv_textarea_create(box);
+    fg_style_apply_textarea(g_wifi_pass_ta);
+    lv_obj_set_width(g_wifi_pass_ta, lv_pct(92));
+    lv_textarea_set_one_line(g_wifi_pass_ta, true);
+    lv_textarea_set_password_mode(g_wifi_pass_ta, true);
+    lv_textarea_set_placeholder_text(g_wifi_pass_ta, "Password");
+
+    lv_obj_add_event_cb(g_wifi_pass_ta,
+                        evt_wifi_pass_focus,
+                        LV_EVENT_FOCUSED,
+                        NULL);
+
+    lv_obj_add_event_cb(g_wifi_pass_ta,
+                        evt_wifi_pass_ready,
+                        LV_EVENT_READY,
+                        NULL);
+
+    lv_obj_add_event_cb(g_wifi_pass_ta,
+                        evt_wifi_pass_ready,
+                        LV_EVENT_CANCEL,
+                        NULL);
+
+    lv_obj_t *btn_connect = lv_button_create(box);
+    fg_style_apply_button(btn_connect);
+    lv_obj_set_size(btn_connect, 180, 42);
+    lv_obj_add_event_cb(btn_connect,
+                        evt_wifi_connect,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    lv_obj_t *btn_connect_lbl = lv_label_create(btn_connect);
+    lv_label_set_text(btn_connect_lbl, "Connect");
+    lv_obj_center(btn_connect_lbl);
+
+    lv_obj_t *row = lv_obj_create(box);
+    lv_obj_remove_style_all(row);
+    lv_obj_set_width(row, lv_pct(92));
+    lv_obj_set_height(row, 48);
+
+    lv_obj_set_layout(row, LV_LAYOUT_FLEX);
+    lv_obj_set_flex_flow(row, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(row,
+                          LV_FLEX_ALIGN_SPACE_BETWEEN,
+                          LV_FLEX_ALIGN_CENTER,
+                          LV_FLEX_ALIGN_CENTER);
+
+    lv_obj_t *btn_disconnect = lv_button_create(row);
+    fg_style_apply_button(btn_disconnect);
+    lv_obj_set_size(btn_disconnect, 150, 42);
+    lv_obj_add_event_cb(btn_disconnect,
+                        evt_wifi_disconnect,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    lv_obj_t *btn_disconnect_lbl = lv_label_create(btn_disconnect);
+    lv_label_set_text(btn_disconnect_lbl, "Disconnect");
+    lv_obj_center(btn_disconnect_lbl);
+
+    lv_obj_t *btn_forget = lv_button_create(row);
+    fg_style_apply_button(btn_forget);
+    lv_obj_set_size(btn_forget, 150, 42);
+    lv_obj_add_event_cb(btn_forget,
+                        evt_wifi_forget,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    lv_obj_t *btn_forget_lbl = lv_label_create(btn_forget);
+    lv_label_set_text(btn_forget_lbl, "Forget");
+    lv_obj_center(btn_forget_lbl);
+
+    if (!g_wifi_timer) {
+        g_wifi_timer = lv_timer_create(fg_wifi_ui_refresh,
+                                       1000,
+                                       NULL);
+    }
+}
+#endif
+
+#if FORGEUI_ENABLE_SD
+static void evt_system_hub_storage(lv_event_t *e)
+{
+    LV_UNUSED(e);
+
+     fg_system_modal_cleanup();
+
+    lv_obj_t *box =
+        fg_reactor_modal_open("Storage",
+                              fg_icon_sdcard());
+
+    g_sd_status_lbl = lv_label_create(box);
+    lv_label_set_text_fmt(g_sd_status_lbl,
+                          "Status: %s",
+                          fg_sd_status_text());
+    fg_style_apply_label(g_sd_status_lbl);
+
+    g_sd_size_lbl = lv_label_create(box);
+    lv_label_set_text(g_sd_size_lbl,
+                      fg_sd_size_text_get());
+    fg_style_apply_label_dim(g_sd_size_lbl);
+
+    g_sd_action_lbl = lv_label_create(box);
+    lv_label_set_text_fmt(g_sd_action_lbl,
+                          "Last: %s",
+                          fg_sd_last_action_text());
+    fg_style_apply_label_dim(g_sd_action_lbl);
+    lv_obj_set_width(g_sd_action_lbl, lv_pct(92));
+    lv_label_set_long_mode(g_sd_action_lbl,
+                           LV_LABEL_LONG_WRAP);
+
+    lv_obj_t *btn_test = lv_button_create(box);
+    fg_style_apply_button(btn_test);
+    lv_obj_set_size(btn_test, 190, 42);
+    lv_obj_add_event_cb(btn_test,
+                        evt_sd_test,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    lv_obj_t *lbl_test = lv_label_create(btn_test);
+    lv_label_set_text(lbl_test, "Test SD");
+    lv_obj_center(lbl_test);
+
+    lv_obj_t *btn_list = lv_button_create(box);
+    fg_style_apply_button(btn_list);
+    lv_obj_set_size(btn_list, 190, 42);
+    lv_obj_add_event_cb(btn_list,
+                        evt_sd_list,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    lv_obj_t *lbl_list = lv_label_create(btn_list);
+    lv_label_set_text(lbl_list, "List ForgeUI");
+    lv_obj_center(lbl_list);
+
+    g_sd_list_lbl = lv_label_create(box);
+    lv_label_set_text(g_sd_list_lbl,
+                      "Press List ForgeUI");
+    fg_style_apply_label_dim(g_sd_list_lbl);
+    lv_obj_set_width(g_sd_list_lbl, lv_pct(92));
+    lv_label_set_long_mode(g_sd_list_lbl,
+                           LV_LABEL_LONG_WRAP);
+
+    lv_obj_t *btn_reset = lv_button_create(box);
+    fg_style_apply_button(btn_reset);
+    lv_obj_set_size(btn_reset, 250, 42);
+    lv_obj_add_event_cb(btn_reset,
+                        evt_sd_reset_storage,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    g_sd_reset_btn_lbl = lv_label_create(btn_reset);
+    lv_label_set_text(g_sd_reset_btn_lbl,
+                      "Live Rebuild ForgeUI");
+    lv_obj_center(g_sd_reset_btn_lbl);
+
+    if (!g_sd_timer) {
+        g_sd_timer = lv_timer_create(fg_sd_ui_refresh,
+                                     1000,
+                                     NULL);
+    }
+}
+#endif
+
+#if FORGEUI_ENABLE_RTC
+static void evt_system_hub_time(lv_event_t *e)
+{
+    LV_UNUSED(e);
+
+    fg_system_modal_cleanup();
+
+    fg_rtc_get(&g_year,
+               &g_month,
+               &g_day,
+               &g_hour,
+               &g_min,
+               &g_sec);
+
+    lv_obj_t *box =
+        fg_reactor_modal_open("Time",
+                              fg_icon_time());
+
+    g_sys_rtc_status = lv_label_create(box);
+    lv_label_set_text(g_sys_rtc_status,
+                      "Set date and time");
+    fg_style_apply_label(g_sys_rtc_status);
+
+    lv_obj_t *row_year  = fg_make_step_row(box, "Year",  &g_lbl_year);
+    lv_obj_t *row_month = fg_make_step_row(box, "Month", &g_lbl_month);
+    lv_obj_t *row_day   = fg_make_step_row(box, "Day",   &g_lbl_day);
+    lv_obj_t *row_hour  = fg_make_step_row(box, "Hour",  &g_lbl_hour);
+    lv_obj_t *row_min   = fg_make_step_row(box, "Min",   &g_lbl_min);
+
+    lv_obj_add_event_cb(fg_find_minus_btn(row_year),
+                        evt_year_minus,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    lv_obj_add_event_cb(fg_find_plus_btn(row_year),
+                        evt_year_plus,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    lv_obj_add_event_cb(fg_find_minus_btn(row_month),
+                        evt_month_minus,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    lv_obj_add_event_cb(fg_find_plus_btn(row_month),
+                        evt_month_plus,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    lv_obj_add_event_cb(fg_find_minus_btn(row_day),
+                        evt_day_minus,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    lv_obj_add_event_cb(fg_find_plus_btn(row_day),
+                        evt_day_plus,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    lv_obj_add_event_cb(fg_find_minus_btn(row_hour),
+                        evt_hour_minus,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    lv_obj_add_event_cb(fg_find_plus_btn(row_hour),
+                        evt_hour_plus,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    lv_obj_add_event_cb(fg_find_minus_btn(row_min),
+                        evt_min_minus,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    lv_obj_add_event_cb(fg_find_plus_btn(row_min),
+                        evt_min_plus,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    fg_refresh_rtc_labels();
+
+    lv_obj_t *btn_apply = lv_button_create(box);
+    fg_style_apply_button(btn_apply);
+
+    lv_obj_set_size(btn_apply, 180, 44);
+
+    lv_obj_add_event_cb(btn_apply,
+                        evt_apply_rtc,
+                        LV_EVENT_CLICKED,
+                        NULL);
+
+    lv_obj_t *lbl = lv_label_create(btn_apply);
+    lv_label_set_text(lbl, "Apply Time");
+    lv_obj_center(lbl);
+}
+#endif
+
 void ui_system_build(lv_obj_t *parent)
 {
     fg_style_apply_screen(parent);
@@ -939,10 +1417,15 @@ void ui_system_build(lv_obj_t *parent)
     lv_obj_set_style_pad_row(panel, 24, 0);
     lv_obj_set_style_pad_column(panel, 24, 0);
 
-    fg_make_hub_card(panel, "Brightness", fg_icon_brightness(), evt_system_hub_placeholder);
-    fg_make_hub_card(panel, "Sound",      fg_icon_sound(),      evt_system_hub_placeholder);
-    fg_make_hub_card(panel, "WiFi",       fg_icon_wifi(),       evt_system_hub_placeholder);
-    fg_make_hub_card(panel, "Storage",    fg_icon_sdcard(),     evt_system_hub_placeholder);
-    fg_make_hub_card(panel, "Time",       fg_icon_time(),       evt_system_hub_placeholder);
+    fg_make_hub_card(panel, "Brightness", fg_icon_brightness(), evt_system_hub_brightness);
+    fg_make_hub_card(panel, "Sound",      fg_icon_sound(),      evt_system_hub_sound);
+    fg_make_hub_card(panel, "WiFi",       fg_icon_wifi(),       evt_system_hub_wifi);
+    fg_make_hub_card(panel, "Storage",    fg_icon_sdcard(),     evt_system_hub_storage);
+    #if FORGEUI_ENABLE_RTC
+    fg_make_hub_card(panel,
+                     "Time",
+                     fg_icon_time(),
+                     evt_system_hub_time);
+#endif
     fg_make_hub_card(panel, "Admin",      fg_icon_admin(),      evt_system_hub_admin);
 }

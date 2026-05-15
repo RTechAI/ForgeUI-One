@@ -1,38 +1,64 @@
 // ============================================================
 // ForgeUI Admin Gate
 // ============================================================
+//
+// ForgeUI
+// Created by Scott Forster
+// Contact: forgeui.esp32@gmail.com
+//
+// Purpose:
+//
 // Optional PIN-based admin access layer.
 //
 // Responsibilities:
-// - protect Admin tab access
+//
+// - protect Admin UI access
 // - handle PIN entry UI
-// - manage simple unlock state
+// - manage temporary unlock state
+// - provide future authentication entry point
 //
 // Current V1 Features:
+//
 // - compile-time enable/disable
 // - masked PIN entry
 // - unlock/relock support
-// - simple keypad UI
+// - keypad-style PIN UI
+// - simple runtime session state
 //
 // Rules:
-// - UI-only gate layer
+//
+// - UI-only access layer
+// - no backend ownership
+// - no hardware ownership
 // - no persistent storage yet
-// - no hardware auth yet
+// - no hardware authentication yet
 //
 // Controlled through:
+//
 //   FORGEUI_ENABLE_ADMIN_GATE
 //
 // Default PIN source:
+//
 //   FORGEUI_ADMIN_DEFAULT_PIN
 //
+// Current Reactor direction:
+//
+// Admin gate acts as:
+//
+// - protected UI boundary
+// - future session entry point
+// - appliance-style protected access layer
+//
 // Future Direction:
+//
 // - NVS-stored PIN
 // - RFID unlock
 // - role/session system
 // - timeout handling
 // - user database integration
+// - customer/service roles
+//
 // ============================================================
-
 
 // ============================================================
 // Includes

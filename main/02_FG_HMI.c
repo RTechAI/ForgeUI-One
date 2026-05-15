@@ -1,30 +1,53 @@
 // ============================================================
 // ForgeUI HMI Core
 // ============================================================
-// Main LVGL HMI construction layer.
+//
+// ForgeUI
+// Created by Scott Forster
+// Contact: forgeui.esp32@gmail.com
+//
+// Purpose:
+//
+// Main LVGL HMI construction and navigation layer.
 //
 // Responsibilities:
+//
 // - create root tabview
-// - apply global styles
-// - create header overlay
-// - create top-level tabs
-// - dispatch tab builders
+// - apply global visual styles
+// - create shared header overlay
+// - create top-level UI pages
+// - dispatch page builders
+// - provide central navigation helpers
 //
 // Rules:
-// - no backend ownership here
-// - no system truth stored here
-// - no hardware init here
+//
+// - no backend ownership
+// - no hardware ownership
+// - no persistent runtime truth
+// - no subsystem state storage
 //
 // Backend modules own truth.
-// UI only renders and sends intent.
+// UI only renders state and sends intent.
 //
-// Current Tabs:
+// Current UI Pages:
+//
 // - Dashboard
 // - Pre Op
 // - System
 // - Admin
+//
+// Reactor Direction:
+//
+// Reactor uses hidden internal LVGL tab routing.
+//
+// Primary navigation:
+// - launcher cards
+// - icon taps
+//
+// Secondary navigation:
+// - swipe gestures
+//
 // ============================================================
-
 
 // ============================================================
 // Includes
@@ -55,6 +78,34 @@ static lv_obj_t *g_tabview = NULL;
 #define FG_TAB_SYSTEM     2
 #define FG_TAB_ADMIN      3
 
+
+// ============================================================
+// Swipe Tuning
+// ============================================================
+
+static void fg_hmi_tune_tab_swipe(lv_obj_t *tabview)
+{
+    if (!tabview) return;
+
+    lv_obj_t *content = lv_tabview_get_content(tabview);
+    if (!content) return;
+
+    lv_obj_set_scroll_dir(content, LV_DIR_HOR);
+
+    lv_obj_set_scroll_snap_x(content,
+                             LV_SCROLL_SNAP_CENTER);
+
+    lv_obj_set_scrollbar_mode(content,
+                              LV_SCROLLBAR_MODE_OFF);
+
+    lv_obj_add_flag(content,
+                    LV_OBJ_FLAG_SCROLL_ONE);
+
+    lv_obj_add_flag(content,
+                    LV_OBJ_FLAG_SCROLL_MOMENTUM);
+}
+
+
 // ============================================================
 // ForgeUI HMI Init
 // ============================================================
@@ -81,16 +132,25 @@ void fg_hmi_init(void)
 
     lv_tabview_set_tab_bar_position(tabview, LV_DIR_TOP);
 
+    fg_hmi_tune_tab_swipe(tabview);
+
 
     // ========================================================
-    // Top Header Bar
-    // ========================================================
+// Top Header Bar
+// ========================================================
 
-    lv_obj_t *tab_bar = lv_tabview_get_tab_bar(tabview);
+lv_obj_t *tab_bar = lv_tabview_get_tab_bar(tabview);
 
-    #if FORGEUI_STYLE_ACTIVE == FORGEUI_STYLE_REACTOR
+#if !FORGEUI_ENABLE_HEADER
+
     lv_obj_add_flag(tab_bar, LV_OBJ_FLAG_HIDDEN);
     lv_obj_set_height(tab_bar, 0);
+
+#elif FORGEUI_STYLE_ACTIVE == FORGEUI_STYLE_REACTOR
+
+    lv_obj_add_flag(tab_bar, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_set_height(tab_bar, 0);
+
 #else
 
     fg_style_apply_panel(tab_bar);
@@ -111,21 +171,17 @@ void fg_hmi_init(void)
                                 fg_style_text(),
                                 0);
 
+#endif
+
 
     // ========================================================
     // Header Overlay
     // ========================================================
-    // Overlay is attached to root screen and positioned
-    // visually inside the tab header region.
-    //
-    // Current use:
-    // - clock
-    // - future status icons
-    // - admin/session indicators
 
+#if FORGEUI_ENABLE_HEADER
+    fg_header_create(scr);
 #endif
 
-    fg_header_create(scr);
 
     // ========================================================
     // Tabs
@@ -157,6 +213,7 @@ void fg_hmi_init(void)
     ui_admin_build(tab_admin);
 }
 
+
 // ============================================================
 // HMI Navigation Helpers
 // ============================================================
@@ -164,27 +221,35 @@ void fg_hmi_init(void)
 void fg_hmi_go_dashboard(void)
 {
     if (g_tabview) {
-        lv_tabview_set_active(g_tabview, FG_TAB_DASHBOARD, LV_ANIM_OFF);
+        lv_tabview_set_active(g_tabview,
+                              FG_TAB_DASHBOARD,
+                              LV_ANIM_OFF);
     }
 }
 
 void fg_hmi_go_preop(void)
 {
     if (g_tabview) {
-        lv_tabview_set_active(g_tabview, FG_TAB_PREOP, LV_ANIM_OFF);
+        lv_tabview_set_active(g_tabview,
+                              FG_TAB_PREOP,
+                              LV_ANIM_OFF);
     }
 }
 
 void fg_hmi_go_system(void)
 {
     if (g_tabview) {
-        lv_tabview_set_active(g_tabview, FG_TAB_SYSTEM, LV_ANIM_OFF);
+        lv_tabview_set_active(g_tabview,
+                              FG_TAB_SYSTEM,
+                              LV_ANIM_OFF);
     }
 }
 
 void fg_hmi_go_admin(void)
 {
     if (g_tabview) {
-        lv_tabview_set_active(g_tabview, FG_TAB_ADMIN, LV_ANIM_OFF);
+        lv_tabview_set_active(g_tabview,
+                              FG_TAB_ADMIN,
+                              LV_ANIM_OFF);
     }
 }

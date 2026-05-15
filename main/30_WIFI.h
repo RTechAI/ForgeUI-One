@@ -1,33 +1,50 @@
 #pragma once
 
-#include <stdbool.h>
-
 // ============================================================
 // ForgeUI Hosted WiFi System
 // ============================================================
+//
+// ForgeUI
+// Created by Scott Forster
+// Contact: forgeui.esp32@gmail.com
+//
+// Purpose:
+//
 // ESP32-P4 hosted WiFi backend.
 //
 // Features:
+//
 // - hosted WiFi init
 // - scan
 // - connect/disconnect
 // - IP status tracking
 // - network forget/reset
+// - scan result caching
 //
 // Runtime Model:
+//
 // - backend owns WiFi state
 // - UI sends intent only
+// - event handler sets flags
+// - fg_wifi_pump() processes deferred work
 //
 // Hardware:
-//   ESP32-P4 host
-//   + onboard ESP32-C6 WiFi
+//
+// ESP32-P4 host
+// + onboard ESP32-C6 WiFi
+// + ESP-Hosted / WiFi Remote
 //
 // Future Direction:
+//
 // - saved networks
 // - reconnect manager
 // - RSSI reporting
 // - cloud sync
+// - NTP time sync
+//
 // ============================================================
+
+#include <stdbool.h>
 
 
 // Initialise hosted WiFi backend

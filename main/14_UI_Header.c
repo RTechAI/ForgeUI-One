@@ -1,30 +1,55 @@
 // ============================================================
 // ForgeUI Header Overlay
 // ============================================================
+//
+// ForgeUI
+// Created by Scott Forster
+// Contact: forgeui.esp32@gmail.com
+//
+// Purpose:
+//
 // Global header/status overlay layer.
 //
 // Responsibilities:
+//
 // - top-right clock display
 // - persistent overlay elements
 // - lightweight runtime status display
+// - shared overlay positioning
 //
 // Current Features:
+//
 // - RTC date/time display
+// - persistent foreground overlay
+// - Reactor-compatible header layer
 //
 // Rules:
+//
 // - overlay only
 // - no backend ownership
-// - no hardware init
+// - no hardware ownership
+// - no low-level display ownership
 // - lightweight refresh path only
 //
+// Backend modules own truth.
+// Header only renders display state.
+//
+// Current ownership:
+//
+// - RTC formatting comes from 20_RTC.c
+// - visual styling comes from 16_UI_Style.c
+// - feature gating comes from 00_ForgeUI_Config.h
+//
 // Future Direction:
+//
 // - WiFi status icon
 // - SD status icon
 // - admin/session state
 // - notifications
 // - telemetry indicators
+// - product/system badges
+//
 // ============================================================
-
 
 // ============================================================
 // Includes
@@ -35,6 +60,8 @@
 #include "20_RTC.h"
 
 #include "16_UI_Style.h"
+
+#include "00_ForgeUI_Config.h"
 
 
 // ============================================================
@@ -82,6 +109,8 @@ void fg_header_create(lv_obj_t *parent)
     // Date/Time Label
     // ========================================================
 
+#if FORGEUI_SHOW_HEADER_CLOCK
+
     g_lbl_dt = lv_label_create(g_blk);
 
     lv_obj_set_style_text_align(g_lbl_dt,
@@ -97,6 +126,12 @@ void fg_header_create(lv_obj_t *parent)
     lv_label_set_text(g_lbl_dt,
                       "Fri 17\n14:32");
 
+#else
+
+    g_lbl_dt = NULL;
+
+#endif
+
 
     // ========================================================
     // Overlay Priority
@@ -105,13 +140,14 @@ void fg_header_create(lv_obj_t *parent)
     lv_obj_move_foreground(g_blk);
 }
 
-
 // ============================================================
 // Header Refresh
 // ============================================================
 
 void fg_header_refresh(void)
 {
+#if FORGEUI_SHOW_HEADER_CLOCK
+
     char buf[32];
 
     fg_rtc_format_header(buf, sizeof(buf));
@@ -119,6 +155,8 @@ void fg_header_refresh(void)
     if (g_lbl_dt) {
         lv_label_set_text(g_lbl_dt, buf);
     }
+
+#endif
 
     if (g_blk) {
         lv_obj_move_foreground(g_blk);

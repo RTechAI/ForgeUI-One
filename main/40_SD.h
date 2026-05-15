@@ -1,17 +1,19 @@
 #pragma once
 
-#include <stdbool.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // ============================================================
 // ForgeUI SD Storage System
 // ============================================================
+//
+// ForgeUI
+// Created by Scott Forster
+// Contact: forgeui.esp32@gmail.com
+//
+// Purpose:
+//
 // Shared SD card + filesystem backend.
 //
 // Features:
+//
 // - SD mount/init
 // - SD read/write test
 // - ForgeUI folder structure
@@ -20,22 +22,42 @@ extern "C" {
 // - runtime status helpers
 //
 // Runtime Model:
+//
 // - backend owns SD state
 // - UI sends intent only
+// - backend owns filesystem lifecycle
 //
 // Important:
+//
 // Hosted WiFi + SDMMC share hardware paths.
+//
 // Current stable boot order:
 //
 //   WiFi first
 //   -> SD second
 //
+// Rules:
+//
+// - backend only
+// - no LVGL ownership
+// - no UI styling
+// - no direct UI dependencies
+//
 // Future Direction:
+//
 // - databases
 // - telemetry storage
 // - export systems
 // - cloud sync
+// - backup/restore systems
+//
 // ============================================================
+
+#include <stdbool.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 // ============================================================
@@ -75,20 +97,27 @@ bool fg_sd_write_boot_marker(void);
 // Async UI-safe reset task
 bool fg_sd_reset_async(void);
 
+
 // ============================================================
 // Fast Storage Reset
 // ============================================================
+//
 // Fast app-level reset.
 //
 // Deletes:
+//
 //   /sdcard/ForgeUI
 //
 // Rebuilds:
+//
 //   clean ForgeUI folder structure
 //
 // Does NOT:
+//
 // - full-format the SD card
 // - remount storage
+//
+// ============================================================
 
 bool fg_sd_reset_storage_blocking(void);
 
@@ -100,6 +129,7 @@ bool fg_sd_reset_storage_blocking(void);
 // List ForgeUI root folders/files
 bool fg_sd_list_forgeui(char *out,
                         int out_len);
+
 
 #ifdef __cplusplus
 }

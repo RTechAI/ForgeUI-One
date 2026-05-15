@@ -17,13 +17,14 @@ idf_component_register(
         "30_WIFI.c"
         "40_SD.c"
 
-        "assets/icons/fg_icon_admin_64_dark.c"
-        "assets/icons/fg_icon_sdcard_64_dark.c"
-        "assets/icons/fg_icon_sound_64_dark.c"
-        "assets/icons/fg_icon_system_64_dark.c"
-        "assets/icons/fg_icon_wifi_64_dark.c"
-	"assets/icons/fg_icon_brightness_64_dark.c"
-	"assets/icons/fg_icon_time_64_dark.c"
+        "assets/icons/fg_icon_admin_48px.c"
+	"assets/icons/fg_icon_brightness_48px.c"
+	"assets/icons/fg_icon_sound_48px.c"
+	"assets/icons/fg_icon_system_48px.c"
+	"assets/icons/fg_icon_time_48px.c"
+	"assets/icons/fg_icon_wifi_48px.c"
+	"assets/icons/fg_icon_sd_card_48px.c"
+	"17_UI_ReactorModal.c"
 
     INCLUDE_DIRS
         "."
