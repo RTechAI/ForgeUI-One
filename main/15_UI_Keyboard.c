@@ -32,10 +32,9 @@
 // ============================================================
 
 #include "15_UI_Keyboard.h"
-
 #include "16_UI_Style.h"
-
 #include "lvgl.h"
+#include "00_ForgeUI_Config.h"
 
 
 // ============================================================
@@ -86,6 +85,36 @@ void fg_keyboard_attach(lv_obj_t *ta)
         g_kb = lv_keyboard_create(scr);
 
         fg_style_apply_panel(g_kb);
+
+/* Nebula keyboard polish */
+#if FORGEUI_STYLE_ACTIVE == FORGEUI_STYLE_NEBULA_BLUE
+    lv_obj_set_style_bg_color(g_kb, lv_color_hex(0x0B1220), LV_PART_MAIN);
+    lv_obj_set_style_bg_opa(g_kb, LV_OPA_COVER, LV_PART_MAIN);
+    lv_obj_set_style_border_color(g_kb, lv_color_hex(0x1E3A5F), LV_PART_MAIN);
+    lv_obj_set_style_border_width(g_kb, 2, LV_PART_MAIN);
+    lv_obj_set_style_radius(g_kb, 14, LV_PART_MAIN);
+    lv_obj_set_style_pad_all(g_kb, 8, LV_PART_MAIN);
+
+    lv_obj_set_style_bg_color(g_kb, lv_color_hex(0x14213A), LV_PART_ITEMS);
+    lv_obj_set_style_bg_opa(g_kb, LV_OPA_COVER, LV_PART_ITEMS);
+    lv_obj_set_style_text_color(g_kb, lv_color_hex(0xEAF2FF), LV_PART_ITEMS);
+    lv_obj_set_style_border_color(g_kb, lv_color_hex(0x2F80ED), LV_PART_ITEMS);
+    lv_obj_set_style_border_width(g_kb, 1, LV_PART_ITEMS);
+    lv_obj_set_style_radius(g_kb, 8, LV_PART_ITEMS);
+
+    lv_obj_set_style_bg_color(g_kb, lv_color_hex(0x2563EB), LV_PART_ITEMS | LV_STATE_PRESSED);
+    lv_obj_set_style_text_color(g_kb, lv_color_hex(0xFFFFFF), LV_PART_ITEMS | LV_STATE_PRESSED);
+
+    /* Catch remaining special/function keys */
+    lv_obj_set_style_bg_color(g_kb, lv_color_hex(0x14213A), LV_PART_ITEMS | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(g_kb, lv_color_hex(0xEAF2FF), LV_PART_ITEMS | LV_STATE_DEFAULT);
+
+    lv_obj_set_style_bg_color(g_kb, lv_color_hex(0x1D4ED8), LV_PART_ITEMS | LV_STATE_CHECKED);
+    lv_obj_set_style_text_color(g_kb, lv_color_hex(0xFFFFFF), LV_PART_ITEMS | LV_STATE_CHECKED);
+
+    lv_obj_set_style_bg_color(g_kb, lv_color_hex(0x1E293B), LV_PART_ITEMS | LV_STATE_FOCUSED);
+    lv_obj_set_style_text_color(g_kb, lv_color_hex(0xFFFFFF), LV_PART_ITEMS | LV_STATE_FOCUSED);
+#endif
 
         lv_obj_set_size(g_kb,
                         lv_pct(100),
