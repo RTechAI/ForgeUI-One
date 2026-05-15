@@ -1,35 +1,50 @@
 // ============================================================
-// ForgeUI Admin Tab
+// ForgeUI Admin UI
 // ============================================================
+//
+// ForgeUI
+// Created by Scott Forster
+// Contact: forgeui.esp32@gmail.com
+//
+// Purpose:
+//
 // Optional protected administration area.
 //
 // Responsibilities:
-// - admin-only UI area
-// - protected settings/workflows
-// - future service/maintenance tools
+//
+// - build Admin page content
+// - enforce Admin gate entry point
+// - host protected settings/workflows
+// - provide future service/maintenance area
 //
 // Current V1 Features:
+//
 // - optional admin gate
 // - compile-time unlock support
+// - PIN keypad path
 // - placeholder admin panel
 //
 // Rules:
+//
 // - UI only
 // - no backend ownership
-// - no hardware init
+// - no hardware ownership
+// - no runtime truth storage
 //
 // Controlled through:
+//
 //   00_ForgeUI_Config.h
 //
 // Future Direction:
+//
 // - PIN authentication
 // - RFID login
 // - role/session management
 // - diagnostics
 // - maintenance tools
 // - firmware update tools
+//
 // ============================================================
-
 
 // ============================================================
 // Includes

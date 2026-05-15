@@ -1,31 +1,53 @@
 // ============================================================
 // ForgeUI Keyboard Overlay
 // ============================================================
+//
+// ForgeUI
+// Created by Scott Forster
+// Contact: forgeui.esp32@gmail.com
+//
+// Purpose:
+//
 // Shared LVGL on-screen keyboard helper.
 //
 // Responsibilities:
+//
 // - create reusable keyboard overlay
 // - attach keyboard to text areas
-// - manage show/hide lifecycle
+// - manage keyboard lifecycle
+// - provide shared text-entry path
 //
 // Current Features:
+//
 // - shared singleton keyboard
 // - password/text entry support
 // - READY/CANCEL handling
+// - Reactor-compatible overlay behaviour
+// - theme-aware keyboard styling
 //
 // Rules:
+//
 // - UI only
 // - no backend ownership
-// - no hardware init
+// - no hardware ownership
+// - no runtime truth storage
+//
+// Keyboard ownership:
+//
+// - single shared keyboard instance
+// - reused across modules/modals
+// - foreground overlay only
 //
 // Future Direction:
+//
 // - theme variants
 // - numeric keypad mode
 // - PIN entry mode
 // - animation/transitions
 // - auto-layout shifting
+// - appliance/product keyboard styles
+//
 // ============================================================
-
 
 // ============================================================
 // Includes
@@ -117,8 +139,8 @@ void fg_keyboard_attach(lv_obj_t *ta)
 #endif
 
         lv_obj_set_size(g_kb,
-                        lv_pct(100),
-                        300);
+                lv_pct(100),
+                      220);
 
         lv_obj_align(g_kb,
                      LV_ALIGN_BOTTOM_MID,

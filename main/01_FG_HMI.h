@@ -7,39 +7,91 @@ extern "C" {
 // ============================================================
 // ForgeUI HMI Configuration
 // ============================================================
-// Small HMI-level feature flags.
 //
-// Keep this lightweight.
-// System-wide feature ownership belongs in:
+// ForgeUI
+// Created by Scott Forster
+// Contact: forgeui.esp32@gmail.com
+//
+// Purpose:
+//
+// Small HMI-level feature flags and UI routing helpers.
+//
+// This layer is intentionally lightweight.
+//
+// System-wide ownership belongs in:
+//
 //   00_ForgeUI_Config.h
 //
-// This file is intended for temporary or
-// UI-specific behaviour toggles only.
+// This file should only contain:
+//
+// - temporary UI toggles
+// - HMI-only behaviour flags
+// - development routing helpers
+// - lightweight UI config paths
+//
+// Avoid:
+//
+// - backend ownership
+// - hardware ownership
+// - duplicated subsystem config
+// - runtime state ownership
+//
 // ============================================================
 
 
 // ============================================================
 // Admin Access Control
 // ============================================================
-// V1 Development Mode
 //
-// 1 = Admin tab unlocked/open
+// FG_ADMIN_DEV_UNLOCK
+//
+// Development helper.
+//
+// 1 = Admin UI unlocked/open
 // 0 = Admin protection enabled
 //
+// Current purpose:
+//
+// - development access
+// - UI testing
+// - routing validation
+//
 // Future direction:
+//
 // - PIN gate
 // - RFID login
 // - role-based access
 // - session manager
+// - timeout handling
+//
+// ============================================================
 
 #define FG_ADMIN_DEV_UNLOCK  1
 
 
 // ============================================================
-// HMI Entry
+// HMI Navigation Entry Points
+// ============================================================
+//
+// These helpers route the hidden internal
+// LVGL tabview/navigation engine.
+//
+// Reactor UI uses:
+//
+// primary navigation:
+//   icon/card tap
+//
+// secondary navigation:
+//   swipe gestures
+//
 // ============================================================
 
 void fg_hmi_init(void);
+
+void fg_hmi_go_dashboard(void);
+void fg_hmi_go_preop(void);
+void fg_hmi_go_system(void);
+void fg_hmi_go_admin(void);
 
 #ifdef __cplusplus
 }

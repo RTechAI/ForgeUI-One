@@ -1,14 +1,23 @@
 // ============================================================
 // ForgeUI RTC System
 // ============================================================
+//
+// ForgeUI
+// Created by Scott Forster
+// Contact: forgeui.esp32@gmail.com
+//
+// Purpose:
+//
 // Shared runtime RTC/timekeeping layer.
 //
 // Responsibilities:
+//
 // - runtime system time ownership
 // - DS3231 integration
 // - NVS fallback persistence
 // - time formatting helpers
 // - boot-time clock restore
+// - shared runtime clock services
 //
 // Current V1 Architecture:
 //
@@ -22,27 +31,44 @@
 //   -> fallback persistence layer
 //
 // Rules:
+//
 // - BSP owns I2C bus init
 // - RTC layer attaches only
 // - runtime reads use ESP time only
 // - DS3231 used at boot + apply/set
+// - UI never owns time truth
 //
 // Controlled through:
+//
 //   FORGEUI_RTC_BACKEND
 //
 // Supported Backends:
+//
 // - NONE
 // - ESP_NVS
 // - DS3231
 //
+// Current Runtime Ownership:
+//
+// Runtime clock truth always comes from:
+//
+//   ESP system time
+//
+// DS3231 acts as:
+//
+// - persistent restore source
+// - hardware retention layer
+//
 // Future Direction:
+//
 // - NTP sync
 // - timezone support
 // - DST support
 // - RTC diagnostics
 // - cloud time sync
+// - RTC health monitoring
+//
 // ============================================================
-
 
 // ============================================================
 // Includes

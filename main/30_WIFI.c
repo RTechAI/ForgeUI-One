@@ -1,14 +1,23 @@
 // ============================================================
 // ForgeUI Hosted WiFi System
 // ============================================================
+//
+// ForgeUI
+// Created by Scott Forster
+// Contact: forgeui.esp32@gmail.com
+//
+// Purpose:
+//
 // ESP32-P4 hosted WiFi backend.
 //
 // Responsibilities:
+//
 // - ESP-Hosted WiFi init
 // - STA mode management
 // - WiFi scanning
 // - connection handling
 // - IP status tracking
+// - runtime WiFi state ownership
 //
 // Hardware Architecture:
 //
@@ -19,32 +28,56 @@
 //   -> onboard WiFi radio
 //
 // Transport:
+//
 //   ESP-Hosted / WiFi Remote
 //
 // Current V1 Features:
+//
 // - hosted WiFi init
 // - scan
 // - connect/disconnect
 // - password auth
 // - IP acquisition
 // - forget network
+// - scan result caching
+// - runtime status abstraction
 //
 // Rules:
-// - backend owns WiFi state
+//
+// - backend owns WiFi truth/state
 // - UI only sends intent
 // - no LVGL ownership here
+// - no UI styling here
+// - no direct UI dependencies
 //
 // Controlled through:
+//
 //   FORGEUI_ENABLE_WIFI
 //
+// Current Runtime Ownership:
+//
+// Backend owns:
+//
+// - WiFi connection state
+// - IP state
+// - scan state
+// - SSID cache
+// - hosted transport state
+//
+// UI reads backend state only.
+//
 // Future Direction:
+//
 // - saved networks
 // - reconnect manager
 // - RSSI reporting
 // - NTP sync
 // - cloud APIs
+// - roaming support
+// - signal quality UI
+// - captive portal support
+//
 // ============================================================
-
 
 // ============================================================
 // Includes

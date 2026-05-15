@@ -2,7 +2,7 @@ FORGEUI SOURCE AVAILABLE LICENSE
 Version 1.0
 
 Copyright (c) 2026 Scott Forster / ForgeUI
-All rights reserved.
+Some rights reserved.
 
 
 ============================================================
@@ -166,6 +166,42 @@ ESP32-P4 bring-up and evaluation workflows using:
 
 ForgeUI has since evolved into a standalone
 application architecture and runtime framework.
+
+============================================================
+BUILD ATTRIBUTION
+============================================================
+
+Any public, commercial, demonstration, educational,
+or redistributed firmware build using ForgeUI must retain
+visible attribution to the original ForgeUI project and author.
+
+Recommended attribution examples:
+
+"Powered by ForgeUI"
+"Built using ForgeUI"
+"ForgeUI Framework"
+"ForgeUI Reactor UI"
+
+Author attribution:
+
+Scott Forster
+email forgeui.esp32@gmail.com
+ForgeUI Project
+
+Attribution may appear in:
+
+- About pages
+- System information screens
+- Boot splash screens
+- Product documentation
+- Release notes
+- Firmware information pages
+- Git repositories
+- Demo videos/screenshots
+
+Removal of original ForgeUI attribution from redistributed
+ForgeUI-based builds is not permitted without written permission
+from the copyright holder.
 
 
 ============================================================

@@ -1,27 +1,40 @@
 // ============================================================
 // ForgeUI SD Storage System
 // ============================================================
+//
+// ForgeUI
+// Created by Scott Forster
+// Contact: forgeui.esp32@gmail.com
+//
+// Purpose:
+//
 // Shared SD card + filesystem backend.
 //
 // Responsibilities:
+//
 // - SD card mount/init
 // - ForgeUI filesystem management
 // - storage reset/rebuild
 // - SD test/read/write validation
 // - runtime storage status
+// - filesystem lifecycle ownership
 //
 // Current V1 Features:
+//
 // - SD mount
 // - SD test file
 // - ForgeUI folder structure
 // - boot marker support
 // - async reset/rebuild
 // - folder listing
+// - runtime storage status helpers
 //
 // Runtime Rules:
+//
 // - backend owns SD state
 // - UI sends intent only
 // - no LVGL ownership here
+// - no UI styling here
 //
 // Important Hardware Note:
 //
@@ -34,21 +47,38 @@
 //   -> SD second
 //
 // Current stable baseline:
+//
 // - Hosted WiFi alive
 // - SD alive
 // - shared operation stable
 //
 // Controlled through:
+//
 //   FORGEUI_ENABLE_SD
 //
+// Current Runtime Ownership:
+//
+// Backend owns:
+//
+// - SD mount state
+// - filesystem lifecycle
+// - storage actions
+// - folder management
+// - reset/rebuild operations
+//
+// UI reads backend state only.
+//
 // Future Direction:
+//
 // - SQLite/light DB
 // - export manager
 // - telemetry storage
 // - user database
 // - cloud sync/export
+// - encrypted storage
+// - backup/restore manager
+//
 // ============================================================
-
 
 // ============================================================
 // Includes

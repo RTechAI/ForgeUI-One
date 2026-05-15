@@ -1,6 +1,7 @@
 ForgeUI P4
 
-
+Scott Forster
+email forgeui.esp32@gmail.com
 
 Clean LVGL v9 hardware baseline for the Waveshare ESP32-P4-WIFI6-Touch-LCD-7B.
 
@@ -598,41 +599,24 @@ starter product editions
 
 LICENSE
 
-
-
 ForgeUI source code:
 
 Copyright (c) 2026 Scott Forster
 
-
-
-Licensed under the MIT License.
-
-
+Licensed under the
+ForgeUI Source Available License.
 
 See:
 
 LICENSE
 
-
-
 Third-party components retain their own licenses.
-
-
 
 See:
 
-THIRD\_PARTY\_LICENSES.md
-
-
+THIRD_PARTY_LICENSES.md
 
 THIRD PARTY SOFTWARE
-
-
-
-This project uses software/components from:
-
-
 
 LVGL
 

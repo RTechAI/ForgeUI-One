@@ -2,6 +2,7 @@ idf_component_register(
     SRCS
         "main.c"
         "02_FG_HMI.c"
+        "05_FG_Icons.c"
         "10_UI_Dashboard.c"
         "11_UI_PreOp.c"
         "12_UI_System.c"
@@ -15,6 +16,15 @@ idf_component_register(
         "30_Audio.c"
         "30_WIFI.c"
         "40_SD.c"
+
+        "assets/icons/fg_icon_admin_48px.c"
+	"assets/icons/fg_icon_brightness_48px.c"
+	"assets/icons/fg_icon_sound_48px.c"
+	"assets/icons/fg_icon_system_48px.c"
+	"assets/icons/fg_icon_time_48px.c"
+	"assets/icons/fg_icon_wifi_48px.c"
+	"assets/icons/fg_icon_sd_card_48px.c"
+	"17_UI_ReactorModal.c"
 
     INCLUDE_DIRS
         "."
