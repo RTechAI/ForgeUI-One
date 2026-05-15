@@ -24,6 +24,7 @@ idf_component_register(
 	"assets/icons/fg_icon_time_48px.c"
 	"assets/icons/fg_icon_wifi_48px.c"
 	"assets/icons/fg_icon_sd_card_48px.c"
+	"assets/icons/fg_icon_home_28px.c"
 	"17_UI_ReactorModal.c"
 
     INCLUDE_DIRS

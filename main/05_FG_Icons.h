@@ -63,7 +63,7 @@ const void *fg_icon_sound(void);
 const void *fg_icon_wifi(void);
 const void *fg_icon_brightness(void);
 const void *fg_icon_time(void);
-
+const void *fg_icon_home(void);
 
 #ifdef __cplusplus
 }

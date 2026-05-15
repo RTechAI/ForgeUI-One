@@ -52,6 +52,7 @@ LV_IMAGE_DECLARE(fg_icon_system_48px);
 LV_IMAGE_DECLARE(fg_icon_time_48px);
 LV_IMAGE_DECLARE(fg_icon_wifi_48px);
 LV_IMAGE_DECLARE(fg_icon_sd_card_48px);
+LV_IMAGE_DECLARE(fg_icon_home_28px);
 
 // ============================================================
 // Icons
@@ -92,3 +93,7 @@ const void *fg_icon_time(void)
     return &fg_icon_time_48px;
 }
 
+const void *fg_icon_home(void)
+{
+    return &fg_icon_home_28px;
+}

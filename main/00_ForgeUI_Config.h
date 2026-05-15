@@ -80,7 +80,7 @@
 // FORGEUI_ENABLE_HEADER = 1
 //
 #define FORGEUI_ENABLE_RTC                 1
-#define FORGEUI_SHOW_HEADER_CLOCK          0
+#define FORGEUI_SHOW_HEADER_CLOCK          1
 // ============================================================
 
 // ============================================================
@@ -133,7 +133,45 @@
 #define FORGEUI_ICON_SET_DARK_64           4
 
 // Active icon pack
+
+// ============================================================
+// ForgeUI Home Button
+// ============================================================
+//
+// Small persistent Reactor home navigation button.
+//
+// Layout:
+//
+// - 28x28 home icon
+// - 36x36 touch/button tile
+//
+// Purpose:
+//
+// - quick return to Dashboard
+// - global utility navigation
+// - visible across all tabs/pages
+//
+// Reactor Direction:
+//
+// Main 48px tiles remain the primary launcher UI.
+//
+// Home button acts as:
+//
+// - utility navigation
+// - fast escape/home control
+//
+// ============================================================
+
 #define FORGEUI_ICON_SET_ACTIVE            FORGEUI_ICON_SET_DARK_48
+
+#define FORGEUI_ENABLE_HOME_BUTTON         1
+
+// 36x36 outer touch tile
+#define FORGEUI_HOME_BUTTON_SIZE           36
+
+// overlay position
+#define FORGEUI_HOME_BUTTON_MARGIN_X       25
+#define FORGEUI_HOME_BUTTON_MARGIN_Y       25
 
 
 // ============================================================
