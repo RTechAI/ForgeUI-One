@@ -1,62 +1,49 @@
 // ============================================================
-// ForgeUI Shared Style System
+// ForgeUI One Style System
 // ============================================================
 //
-// ForgeUI
-// Created by Scott Forster
-// Contact: forgeui.esp32@gmail.com
+// File:
+// 16_UI_Style.c
+//
+// Created by:
+// Scott Forster
+//
+// Contact:
+// forgeui.esp32@gmail.com
 //
 // Purpose:
-//
-// Centralized visual styling and theme layer.
+// Central visual styling layer for ForgeUI One.
 //
 // Responsibilities:
-//
-// - theme color ownership
-// - visual consistency
+// - theme colour ownership
 // - shared LVGL style helpers
 // - compile-time theme selection
-// - Reactor visual identity ownership
+// - consistent ForgeUI visual identity
 //
 // Current Themes:
-//
 // - Atlas Light
 // - Nebula Blue
-// - Reactor UI direction
+// - Carbon
 //
 // Rules:
-//
 // - style-only responsibilities
 // - no backend ownership
 // - no hardware ownership
 // - no runtime state ownership
+// - no workflow ownership
 //
-// Controlled through:
+// Controlled Through:
 //
 //   FORGEUI_STYLE_ACTIVE
 //
-// Current Architecture:
+// UI modules should avoid hardcoding:
 //
-// UI modules should never hardcode:
-//
-// - colors
+// - colours
 // - radii
 // - panel styling
 // - text styling
 //
-// All shared visual ownership should flow
-// through this layer.
-//
-// Future Direction:
-//
-// - runtime theme switching
-// - animated transitions
-// - industrial themes
-// - compact/touch modes
-// - typography presets
-// - shared LVGL style objects/cache
-// - customer branding packs
-// - appliance-style themes
+// Shared visual ownership should flow through this layer.
 //
 // ============================================================
 

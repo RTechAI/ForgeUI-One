@@ -1,19 +1,28 @@
 #pragma once
 
+#include <stdbool.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // ============================================================
-// ForgeUI SD Storage System
+// ForgeUI One SD Storage System
 // ============================================================
 //
-// ForgeUI
-// Created by Scott Forster
-// Contact: forgeui.esp32@gmail.com
+// File:
+// 40_SD.h
+//
+// Created by:
+// Scott Forster
+//
+// Contact:
+// forgeui.esp32@gmail.com
 //
 // Purpose:
-//
-// Shared SD card + filesystem backend.
+// Shared SD card and filesystem backend.
 //
 // Features:
-//
 // - SD mount/init
 // - SD read/write test
 // - ForgeUI folder structure
@@ -22,43 +31,27 @@
 // - runtime status helpers
 //
 // Runtime Model:
-//
 // - backend owns SD state
 // - UI sends intent only
 // - backend owns filesystem lifecycle
 //
-// Important:
+// Important Hardware Truth:
 //
-// Hosted WiFi + SDMMC share hardware paths.
+// Hosted WiFi and SDMMC share hardware paths.
 //
-// Current stable boot order:
+// Current proven stable boot order:
 //
 //   WiFi first
 //   -> SD second
 //
 // Rules:
-//
 // - backend only
 // - no LVGL ownership
 // - no UI styling
 // - no direct UI dependencies
-//
-// Future Direction:
-//
-// - databases
-// - telemetry storage
-// - export systems
-// - cloud sync
-// - backup/restore systems
+// - no workflow ownership
 //
 // ============================================================
-
-#include <stdbool.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 
 // ============================================================
 // Core
@@ -69,7 +62,6 @@ bool fg_sd_init(void);
 
 // Simple SD read/write validation test
 bool fg_sd_test(void);
-
 
 // ============================================================
 // Status Helpers
@@ -83,7 +75,6 @@ const char *fg_sd_last_action_text(void);
 
 const char *fg_sd_size_text_get(void);
 
-
 // ============================================================
 // Storage Actions
 // ============================================================
@@ -94,9 +85,8 @@ bool fg_sd_create_folders(void);
 // Write simple boot marker file
 bool fg_sd_write_boot_marker(void);
 
-// Async UI-safe reset task
+// Async reset task helper
 bool fg_sd_reset_async(void);
-
 
 // ============================================================
 // Fast Storage Reset
@@ -113,14 +103,12 @@ bool fg_sd_reset_async(void);
 //   clean ForgeUI folder structure
 //
 // Does NOT:
-//
 // - full-format the SD card
 // - remount storage
 //
 // ============================================================
 
 bool fg_sd_reset_storage_blocking(void);
-
 
 // ============================================================
 // Folder / File View
@@ -129,7 +117,6 @@ bool fg_sd_reset_storage_blocking(void);
 // List ForgeUI root folders/files
 bool fg_sd_list_forgeui(char *out,
                         int out_len);
-
 
 #ifdef __cplusplus
 }

@@ -1,82 +1,49 @@
 // ============================================================
-// ForgeUI SD Storage System
+// ForgeUI One SD Storage System
 // ============================================================
 //
-// ForgeUI
-// Created by Scott Forster
-// Contact: forgeui.esp32@gmail.com
+// File:
+// 40_SD.c
+//
+// Created by:
+// Scott Forster
+//
+// Contact:
+// forgeui.esp32@gmail.com
 //
 // Purpose:
+// Shared SD card and filesystem backend.
 //
-// Shared SD card + filesystem backend.
-//
-// Responsibilities:
-//
+// Features:
 // - SD card mount/init
-// - ForgeUI filesystem management
-// - storage reset/rebuild
-// - SD test/read/write validation
-// - runtime storage status
-// - filesystem lifecycle ownership
-//
-// Current V1 Features:
-//
-// - SD mount
-// - SD test file
+// - SD read/write test
 // - ForgeUI folder structure
 // - boot marker support
-// - async reset/rebuild
+// - storage reset/rebuild
 // - folder listing
-// - runtime storage status helpers
+// - runtime status helpers
 //
 // Runtime Rules:
-//
 // - backend owns SD state
 // - UI sends intent only
-// - no LVGL ownership here
-// - no UI styling here
+// - no LVGL ownership
+// - no UI styling
+// - no workflow ownership
 //
-// Important Hardware Note:
+// Important Hardware Truth:
 //
-// ESP32-P4 Hosted WiFi and SDMMC
-// share critical hardware paths.
+// ESP32-P4 Hosted WiFi and SDMMC share critical hardware paths.
 //
 // Proven stable boot order:
 //
 //   WiFi first
 //   -> SD second
 //
-// Current stable baseline:
+// Do not mount SD before Hosted WiFi unless retested and proven again.
 //
-// - Hosted WiFi alive
-// - SD alive
-// - shared operation stable
-//
-// Controlled through:
+// Controlled Through:
 //
 //   FORGEUI_ENABLE_SD
-//
-// Current Runtime Ownership:
-//
-// Backend owns:
-//
-// - SD mount state
-// - filesystem lifecycle
-// - storage actions
-// - folder management
-// - reset/rebuild operations
-//
-// UI reads backend state only.
-//
-// Future Direction:
-//
-// - SQLite/light DB
-// - export manager
-// - telemetry storage
-// - user database
-// - cloud sync/export
-// - encrypted storage
-// - backup/restore manager
 //
 // ============================================================
 

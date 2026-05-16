@@ -1,48 +1,65 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // ============================================================
-// ForgeUI RTC System
+// ForgeUI One RTC System
 // ============================================================
 //
-// ForgeUI
-// Created by Scott Forster
-// Contact: forgeui.esp32@gmail.com
+// File:
+// 20_RTC.h
+//
+// Created by:
+// Scott Forster
+//
+// Contact:
+// forgeui.esp32@gmail.com
 //
 // Purpose:
-//
-// Shared runtime RTC/timekeeping layer.
+// Shared runtime RTC and timekeeping layer.
 //
 // Responsibilities:
-//
 // - runtime clock ownership
 // - RTC backend abstraction
 // - DS3231 integration
 // - NVS fallback persistence
 // - date/time formatting helpers
 //
-// Controlled through:
+// Controlled Through:
 //
 //   FORGEUI_RTC_BACKEND
 //
-// Current Runtime Model:
+// Runtime Model:
 //
-// - ESP system time = active runtime clock
-// - DS3231 = persistent hardware source
-// - NVS = fallback persistence
+// ESP system time
+//   -> active runtime clock
+//
+// DS3231
+//   -> persistent hardware RTC
+//
+// NVS
+//   -> fallback persistence layer
 //
 // Rules:
-//
 // - UI never owns time truth
 // - runtime reads use ESP system time
-// - DS3231 is used at boot restore and set/apply
+// - DS3231 used at boot restore and set/apply
 // - BSP owns I2C bus init
 //
 // ============================================================
 
+// ============================================================
+// Runtime RTC Init
+// ============================================================
 
 // Initialise runtime RTC system
 void fg_rtc_init(void);
 
+// ============================================================
+// Runtime Time Access
+// ============================================================
 
 // Set runtime/system time
 void fg_rtc_set(int year,
@@ -50,7 +67,6 @@ void fg_rtc_set(int year,
                 int day,
                 int hour,
                 int min);
-
 
 // Get runtime/system time
 void fg_rtc_get(int *year,
@@ -60,10 +76,16 @@ void fg_rtc_get(int *year,
                 int *min,
                 int *sec);
 
+// ============================================================
+// Format Helpers
+// ============================================================
 
-// Format helpers
 void fg_rtc_format_day(char *out, int max);
 
 void fg_rtc_format_time(char *out, int max);
 
 void fg_rtc_format_header(char *out, int max);
+
+#ifdef __cplusplus
+}
+#endif

@@ -1,64 +1,62 @@
 #pragma once
 
+#include "lvgl.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // ============================================================
-// ForgeUI Shared Style System
+// ForgeUI One Style System
 // ============================================================
 //
-// ForgeUI
-// Created by Scott Forster
-// Contact: forgeui.esp32@gmail.com
+// File:
+// 16_UI_Style.h
+//
+// Created by:
+// Scott Forster
+//
+// Contact:
+// forgeui.esp32@gmail.com
 //
 // Purpose:
-//
-// Centralized visual styling and theme layer.
+// Central visual styling layer for ForgeUI One.
 //
 // Responsibilities:
-//
-// - theme colors
+// - theme colours
 // - shared widget styling
 // - visual consistency
 // - compile-time theme selection
-// - Reactor visual identity ownership
+// - shared ForgeUI visual ownership
 //
 // Current Themes:
-//
 // - Atlas Light
 // - Nebula Blue
-// - Reactor UI direction
+// - Carbon
 //
-// Controlled through:
+// Controlled Through:
 //
 //   FORGEUI_STYLE_ACTIVE
 //
-// in:
+// In:
 //
 //   00_ForgeUI_Config.h
 //
 // Rules:
-//
 // - style-only responsibilities
 // - no backend ownership
 // - no hardware ownership
 // - no runtime truth storage
+// - no workflow ownership
 //
 // ============================================================
-
-#include "lvgl.h"
-
-
-// ============================================================
-// Style System Init
-// ============================================================
-
-void fg_style_init(void);
-
 
 // ============================================================
 // Style Apply Helpers
 // ============================================================
 
 void fg_style_apply_screen(lv_obj_t *obj);
-void fg_style_apply_tile(lv_obj_t *obj);
+void fg_style_apply_card(lv_obj_t *obj);
 void fg_style_apply_panel(lv_obj_t *obj);
 void fg_style_apply_button(lv_obj_t *obj);
 void fg_style_apply_dropdown(lv_obj_t *obj);
@@ -66,22 +64,24 @@ void fg_style_apply_textarea(lv_obj_t *obj);
 void fg_style_apply_label(lv_obj_t *obj);
 void fg_style_apply_label_dim(lv_obj_t *obj);
 
-
 // ============================================================
-// Color Helpers
+// Colour Helpers
 // ============================================================
 
 lv_color_t fg_style_bg(void);
-lv_color_t fg_style_tile(void);
+lv_color_t fg_style_card(void);
 lv_color_t fg_style_panel(void);
 lv_color_t fg_style_border(void);
 lv_color_t fg_style_text(void);
 lv_color_t fg_style_text_dim(void);
 lv_color_t fg_style_accent(void);
 
-
 // ============================================================
 // Shared Metrics
 // ============================================================
 
 int fg_style_radius(void);
+
+#ifdef __cplusplus
+}
+#endif

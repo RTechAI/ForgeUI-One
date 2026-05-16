@@ -1,45 +1,39 @@
 #pragma once
 
+#include "lvgl.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // ============================================================
-// ForgeUI One HMI
+// ForgeUI One Home Screen
 // ============================================================
 //
 // File:
-// 01_FG_HMI.h
-//
-// Created by:
-// Scott Forster
+// 02_UI_Home.h
 //
 // Purpose:
-// Lightweight single-screen LVGL shell.
+// Main single-page Home screen.
 //
 // Responsibilities:
-// - root screen ownership
-// - global screen styling
-// - optional header layer
-// - launch Home screen
+// - build primary Home screen
+// - render alive/runtime proof UI
+// - host future launcher widgets
 //
 // Rules:
-// - no tabs
-// - no routing
-// - no workflow ownership
+// - UI only
+// - no backend ownership
 // - no hardware ownership
-//
-// Global system ownership belongs in:
-//
-//   00_ForgeUI_Config.h
+// - no runtime workflow logic
 //
 // ============================================================
 
 // ============================================================
-// HMI Init
+// Home Screen Builder
 // ============================================================
 
-void fg_hmi_init(void);
+void ui_home_build(lv_obj_t *parent);
 
 #ifdef __cplusplus
 }

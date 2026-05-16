@@ -1,59 +1,43 @@
 #pragma once
 
+#include "lvgl.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // ============================================================
-// ForgeUI Header Overlay
+// ForgeUI One Header Layer
 // ============================================================
 //
-// ForgeUI
-// Created by Scott Forster
-// Contact: forgeui.esp32@gmail.com
+// File:
+// 14_UI_Header.h
 //
 // Purpose:
-//
-// Global overlay/header UI layer.
+// Lightweight optional top UI layer.
 //
 // Responsibilities:
-//
-// - persistent overlay rendering
-// - top-right RTC clock display
-// - lightweight runtime status display
-// - shared overlay positioning
-//
-// Current Features:
-//
-// - top-right RTC clock
-// - persistent foreground overlay
+// - create persistent foreground header layer
+// - render optional top-right RTC clock
+// - keep header positioning centralised
 //
 // Rules:
-//
 // - UI only
 // - no backend ownership
 // - no hardware ownership
 // - no runtime truth storage
-//
-// Backend modules own truth.
-// This layer renders display state only.
-//
-// Future Direction:
-//
-// - status icons
-// - notifications
-// - admin/session indicators
-// - telemetry indicators
-// - product badges
-// - live connection indicators
+// - no routing
+// - no workflow logic
 //
 // ============================================================
 
-#include "lvgl.h"
-
-
 // ============================================================
-// Header Overlay
+// Header API
 // ============================================================
 
-// Create persistent overlay/header objects
 void fg_header_create(lv_obj_t *parent);
-
-// Refresh runtime header values
 void fg_header_refresh(void);
+
+#ifdef __cplusplus
+}
+#endif

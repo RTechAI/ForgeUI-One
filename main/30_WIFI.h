@@ -1,19 +1,28 @@
 #pragma once
 
+#include <stdbool.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // ============================================================
-// ForgeUI Hosted WiFi System
+// ForgeUI One Hosted WiFi System
 // ============================================================
 //
-// ForgeUI
-// Created by Scott Forster
-// Contact: forgeui.esp32@gmail.com
+// File:
+// 30_WIFI.h
+//
+// Created by:
+// Scott Forster
+//
+// Contact:
+// forgeui.esp32@gmail.com
 //
 // Purpose:
-//
 // ESP32-P4 hosted WiFi backend.
 //
 // Features:
-//
 // - hosted WiFi init
 // - scan
 // - connect/disconnect
@@ -22,39 +31,40 @@
 // - scan result caching
 //
 // Runtime Model:
-//
 // - backend owns WiFi state
 // - UI sends intent only
 // - event handler sets flags
 // - fg_wifi_pump() processes deferred work
 //
-// Hardware:
+// Hardware Path:
 //
-// ESP32-P4 host
-// + onboard ESP32-C6 WiFi
-// + ESP-Hosted / WiFi Remote
+// ESP32-P4
+//   -> ESP-Hosted
+//   -> SDIO
+//   -> ESP32-C6
+//   -> WiFi Remote
 //
-// Future Direction:
-//
-// - saved networks
-// - reconnect manager
-// - RSSI reporting
-// - cloud sync
-// - NTP time sync
+// Rules:
+// - no LVGL ownership
+// - no UI styling
+// - no direct UI dependencies
 //
 // ============================================================
 
-#include <stdbool.h>
-
+// ============================================================
+// Runtime WiFi Init
+// ============================================================
 
 // Initialise hosted WiFi backend
 void fg_wifi_init(void);
 
-// Runtime WiFi pump/task helper
+// Runtime WiFi pump/helper
 void fg_wifi_pump(void);
 
+// ============================================================
+// Runtime Status Helpers
+// ============================================================
 
-// Status helpers
 bool fg_wifi_is_ready(void);
 
 bool fg_wifi_is_connected(void);
@@ -63,18 +73,26 @@ const char *fg_wifi_status_text(void);
 
 const char *fg_wifi_ip_text(void);
 
+// ============================================================
+// WiFi Scan Helpers
+// ============================================================
 
-// WiFi scan helpers
 void fg_wifi_scan_start(void);
 
 int fg_wifi_get_scan_results(char ssids[][33],
                              int max);
 
+// ============================================================
+// Connection Helpers
+// ============================================================
 
-// Connection helpers
 void fg_wifi_connect(const char *ssid,
                      const char *pass);
 
 void fg_wifi_disconnect(void);
 
 void fg_wifi_forget(void);
+
+#ifdef __cplusplus
+}
+#endif

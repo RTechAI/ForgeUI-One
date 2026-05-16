@@ -1,129 +1,98 @@
-
-
 // ============================================================
-// ForgeUI Attribution
+// ForgeUI One
 // ============================================================
 //
-// ForgeUI
 // Created by Scott Forster
 // Contact: forgeui.esp32@gmail.com
 //
-// Built to help ESP32-P4 developers get a clean,
-// working LVGL UI baseline alive faster.
+// Clean ESP32-P4 LVGL starter framework.
 //
-// Please retain ForgeUI attribution in public,
-// commercial, educational, or redistributed builds.
+// Purpose:
+// - single-page alive baseline
+// - display + touch proof
+// - header + styling baseline
+// - hosted WiFi support
+// - SD card support
+// - RTC support
+// - optional audio support
+//
+// Designed to help ESP32-P4 developers get a stable UI baseline
+// alive faster.
+//
+// Please retain ForgeUI attribution in public, commercial,
+// educational, or redistributed builds.
 //
 // Powered by ForgeUI
 //
-// ============================================================
-
-// ============================================================
-// ForgeUI Global Configuration.
 // ============================================================
 
 #pragma once
 
 #include "driver/i2c_master.h"
 
+// ============================================================
+// ForgeUI Version
+// ============================================================
+
+#define FORGEUI_VERSION_MAJOR              1
+#define FORGEUI_VERSION_MINOR              0
+#define FORGEUI_VERSION_PATCH              0
 
 // ============================================================
-// ForgeUI Master Feature Switches
+// Core Feature Switches
+// ============================================================
+//
+// These switches control which ForgeUI One modules are compiled
+// into the live runtime.
+//
+// Keep the single-page base light.
+// Turn optional hardware features on only when needed.
+//
 // ============================================================
 
-#define FORGEUI_ENABLE_AUDIO               1
+#define FORGEUI_ENABLE_RTC                 1
 #define FORGEUI_ENABLE_WIFI                1
 #define FORGEUI_ENABLE_SD                  1
-
-// Optional application/workflow modules
-#define FORGEUI_ENABLE_PREOP               1
-
+#define FORGEUI_ENABLE_AUDIO               0
 
 // ============================================================
-// ForgeUI Header Options
-// ============================================================
-//
-// FORGEUI_ENABLE_HEADER
-//
-// 1 = Header enabled
-// 0 = Header disabled
-//
-// Controls:
-// - top tab/header bar
-// - header overlay layer
-//
+// Header Options
 // ============================================================
 
 #define FORGEUI_ENABLE_HEADER              1
-
-// ============================================================
-// ForgeUI Time Options
-// ============================================================
-//
-// FORGEUI_ENABLE_RTC (TIME ON SCREEN)
-//
-// 1 = Time system ON
-// 0 = Time system OFF
-//
-// Controls:
-// - RTC backend
-// - Time tile/modal
-// - runtime timekeeping
-//
-//
-// FORGEUI_SHOW_HEADER_CLOCK
-//
-// 1 = Header clock visible
-// 0 = Header clock hidden
-//
-// Requires:
-// FORGEUI_ENABLE_HEADER = 1
-//
-#define FORGEUI_ENABLE_RTC                 1
 #define FORGEUI_SHOW_HEADER_CLOCK          1
-// ============================================================
 
 // ============================================================
-// ForgeUI Admin Gate Options
+// Display Options
 // ============================================================
 
-#define FORGEUI_ENABLE_ADMIN_GATE          1
-#define FORGEUI_ADMIN_DEFAULT_PIN          "1234"
+#define FORGEUI_ROTATION_0                 0
+#define FORGEUI_ROTATION_180               1
 
-// 0 = disabled / no timeout yet
-#define FORGEUI_ADMIN_SESSION_TIMEOUT_MIN  0
-
-// ============================================================
-// ForgeUI Visual Active Styles
-// ============================================================
-
-//#define FORGEUI_STYLE_ACTIVE                FORGEUI_STYLE_ATLAS_LIGHT 
-//#define FORGEUI_STYLE_ACTIVE                  FORGEUI_STYLE_NEBULA_BLUE 
-#define FORGEUI_STYLE_ACTIVE               FORGEUI_STYLE_REACTOR
-
-#define FORGEUI_ENABLE_DASHBOARD_TILES   1
+#define FORGEUI_DISPLAY_ROTATION           FORGEUI_ROTATION_180
 
 // ============================================================
-// Theme IDs LEAVE ETHESE ALONE
+// Theme IDs
 // ============================================================
 
 #define FORGEUI_STYLE_ATLAS_LIGHT          0
 #define FORGEUI_STYLE_NEBULA_BLUE          1
-#define FORGEUI_STYLE_REACTOR              2
+#define FORGEUI_STYLE_CARBON               2
+
+// ============================================================
+// Active Theme
+// ============================================================
+//
+// Select ONE active style.
+//
+// ============================================================
+
+//#define FORGEUI_STYLE_ACTIVE             FORGEUI_STYLE_ATLAS_LIGHT
+#define FORGEUI_STYLE_ACTIVE             FORGEUI_STYLE_NEBULA_BLUE
 
 
 // ============================================================
-// ForgeUI Icon Sets
-// ============================================================
-//
-// Current Reactor proof uses 48px icons.
-//
-// Rules:
-// - icon declarations live in 05_FG_Icons.c/h
-// - CMake must compile generated icon .c files
-// - use underscores only
-// - never use hyphens in C symbol names
-//
+// Icon Set IDs
 // ============================================================
 
 #define FORGEUI_ICON_SET_LIGHT_32          0
@@ -132,61 +101,25 @@
 #define FORGEUI_ICON_SET_DARK_48           3
 #define FORGEUI_ICON_SET_DARK_64           4
 
-// Active icon pack
-
 // ============================================================
-// ForgeUI Home Button
-// ============================================================
-//
-// Small persistent Reactor home navigation button.
-//
-// Layout:
-//
-// - 28x28 home icon
-// - 36x36 touch/button tile
-//
-// Purpose:
-//
-// - quick return to Dashboard
-// - global utility navigation
-// - visible across all tabs/pages
-//
-// Reactor Direction:
-//
-// Main 48px tiles remain the primary launcher UI.
-//
-// Home button acts as:
-//
-// - utility navigation
-// - fast escape/home control
-//
+// Active Icon Set
 // ============================================================
 
 #define FORGEUI_ICON_SET_ACTIVE            FORGEUI_ICON_SET_DARK_48
 
-#define FORGEUI_ENABLE_HOME_BUTTON         1
-
-// 36x36 outer touch tile
-#define FORGEUI_HOME_BUTTON_SIZE           36
-
-// overlay position
-#define FORGEUI_HOME_BUTTON_MARGIN_X       25
-#define FORGEUI_HOME_BUTTON_MARGIN_Y       25
-
-
 // ============================================================
-// Wi-Fi Backend Options
+// WiFi Backend Options
 // ============================================================
 //
-// ESP32-P4 has NO native Wi-Fi radio.
+// ESP32-P4 has no native WiFi radio.
 //
-// Wi-Fi path:
+// ForgeUI One WiFi path:
 //
 // ESP32-P4
 // -> ESP-Hosted
 // -> SDIO
 // -> ESP32-C6
-// -> Wi-Fi Remote
+// -> WiFi Remote
 //
 // ============================================================
 
@@ -207,9 +140,13 @@
 #define FORGEUI_RTC_BACKEND_ESP_NVS        1
 #define FORGEUI_RTC_BACKEND_DS3231         2
 
-
 // ============================================================
 // Active RTC Backend
+// ============================================================
+//
+// DS3231 is the preferred retained-time backend.
+// ESP_NVS is a fallback/software-only option.
+//
 // ============================================================
 
 #if FORGEUI_ENABLE_RTC
@@ -218,9 +155,15 @@
 #define FORGEUI_RTC_BACKEND                FORGEUI_RTC_BACKEND_NONE
 #endif
 
-
 // ============================================================
 // DS3231 Settings
+// ============================================================
+//
+// Board path:
+// - DS3231 on BSP I2C bus
+// - address 0x68
+// - ESP32-P4 I2C_NUM_0
+//
 // ============================================================
 
 #define FORGEUI_DS3231_ADDR                0x68
@@ -229,78 +172,61 @@
 #define FORGEUI_DS3231_SDA_IO              7
 #define FORGEUI_DS3231_SCL_IO              8
 
-
 // ============================================================
-// ForgeUI Status Drawer Options
-// ============================================================
-
-#define FORGEUI_STATUS_DRAWER_LEFT         0
-#define FORGEUI_STATUS_DRAWER_RIGHT        1
-#define FORGEUI_STATUS_DRAWER_SIDE         FORGEUI_STATUS_DRAWER_RIGHT
-
-#define FORGEUI_STATUS_DRAWER_WIDTH        240
-
-#define FORGEUI_STATUS_DRAWER_HANDLE_W     28
-#define FORGEUI_STATUS_DRAWER_HANDLE_H     120
-
-#define FORGEUI_STATUS_DRAWER_Y            80
-#define FORGEUI_STATUS_DRAWER_BOTTOM_GAP   20
-
-// ============================================================
-// ForgeUI Reactor Modal Options
-// ============================================================
-
-#define FORGEUI_REACTOR_MODAL_STYLE_FLAT       0
-#define FORGEUI_REACTOR_MODAL_STYLE_GLOW       1
-#define FORGEUI_REACTOR_MODAL_STYLE_GLASS      2
-
-#define FORGEUI_REACTOR_MODAL_STYLE_ACTIVE     FORGEUI_REACTOR_MODAL_STYLE_FLAT
-
-#define FORGEUI_REACTOR_MODAL_ANIM_NONE        0
-#define FORGEUI_REACTOR_MODAL_ANIM_FADE        1
-#define FORGEUI_REACTOR_MODAL_ANIM_ZOOM        2
-
-#define FORGEUI_REACTOR_MODAL_ANIM_ACTIVE      FORGEUI_REACTOR_MODAL_ANIM_NONE
-
-#define FORGEUI_REACTOR_MODAL_DIM_BACKGROUND   0
-
-#define FORGEUI_REACTOR_MODAL_WIDTH            500
-#define FORGEUI_REACTOR_MODAL_HEIGHT           520
-
-// ============================================================
-// Reactor Modal Runtime State
+// SD / WiFi Boot Order Truth
 // ============================================================
 //
-// Current Stable Reactor Baseline:
+// Current proven stable Hosted WiFi + SD order:
 //
-// - Reactor hub tile launcher active
-// - Shared Reactor modal system active
-// - Shared keyboard overlay active
-// - Brightness modal stable
-// - Sound modal stable
-// - WiFi modal stable
-// - Storage modal stable
-// - 48px icon pack active
-// - async modal delete active
-// - stale LVGL object guards active
-// - modal close reset bug fixed
+//   WiFi init first
+//   -> SD mount second
 //
-// Rules:
-//
-// - Reactor modals must NEVER assume LVGL
-//   objects still exist during timer refresh
-//
-// - ALL timer-driven UI refresh paths must
-//   validate object pointers before use
-//
-// - Shared overlays/keyboards/modals must
-//   use async deletion where possible
-//
-// - Backend modules own runtime truth
-//   UI only renders state
+// Do not mount SD before Hosted WiFi on this ESP32-P4 board
+// unless this has been retested and proven again.
 //
 // ============================================================
-// Powered by ForgeUI 
-// use it emnjoy it make it your next UI and let me know how you go, happy to help
-// Your succesfull build is important, get going with easy UI alive ForgeUI
+
+// ============================================================
+// Runtime Ownership Rules
+// ============================================================
+//
+// main.c:
+// - boot order only
+// - board bring-up only
+// - LVGL startup only
+//
+// backend modules:
+// - own hardware state
+// - own system truth
+//
+// UI modules:
+// - render only
+// - send intent only
+// - no hardware ownership
+//
+// ============================================================
+
+// ============================================================
+// ForgeUI One Identity
+// ============================================================
+//
+// This project is ForgeUI One.
+//
+// Do not reintroduce old runtime names:
+// - ForkGuard
+// - Reactor UI
+// - LVGL demo widgets
+// - vendor demo runtime ownership
+//
+// Old names may only appear in historical notes,
+// never in active module ownership.
+//
+// ============================================================
+//
+// Powered by ForgeUI
+//
+// Build cool stuff.
+// Enjoy.
+// Let me know how your project goes.
+//
 // ============================================================
