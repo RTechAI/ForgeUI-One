@@ -1,7 +1,8 @@
 // ============================================================
 // ForgeUI One HMI Core
 // ============================================================
-//01_FG_HMI.c
+// 01_FG_HMI.c
+//
 // Single-page LVGL runtime shell.
 //
 // Responsibilities:
@@ -29,7 +30,7 @@
 
 void fg_hmi_init(void)
 {
-    lv_obj_t *scr = lv_screen_active();
+    lv_obj_t* scr = lv_screen_active();
 
     fg_style_apply_screen(scr);
 
@@ -38,4 +39,5 @@ void fg_hmi_init(void)
 #endif
 
     ui_home_build(scr);
+
 }

@@ -26,6 +26,28 @@
 //
 // ============================================================
 
+// ============================================================
+// Studio Export Test
+// ============================================================
+//
+// Enables temporary ForgeUI Studio -> LVGL export testing.
+//
+// Purpose:
+// - validate generated LVGL code
+// - validate Studio coordinate export
+// - validate physical ESP32-P4 rendering
+//
+// When enabled:
+// - 90_Studio_Export.c may inject generated LVGL objects
+// - generated screens may appear on top of ForgeUI One UI
+//
+// This is a temporary experimental bridge layer.
+//
+// ============================================================
+
+#define FORGEUI_ENABLE_STUDIO_EXPORT_TEST  1
+
+
 #pragma once
 
 #include "driver/i2c_master.h"

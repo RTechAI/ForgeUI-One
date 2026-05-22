@@ -11,6 +11,9 @@ idf_component_register(
         "30_Audio.c"
         "30_WIFI.c"
         "40_SD.c"
+	"90_Studio_Export.c"
+
+
 
     INCLUDE_DIRS
         "."

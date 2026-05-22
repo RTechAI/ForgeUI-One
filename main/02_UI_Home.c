@@ -26,6 +26,7 @@
 #include "lvgl.h"
 
 #include "16_UI_Style.h"
+#include "90_Studio_Export.h"
 
 void ui_home_build(lv_obj_t *parent)
 {
@@ -60,4 +61,10 @@ void ui_home_build(lv_obj_t *parent)
     lv_obj_set_style_text_font(title,
                                &lv_font_montserrat_22,
                                0);
+
+    // ========================================================
+    // Studio Export Test
+    // ========================================================
+
+    fg_studio_export_create(parent);
 }
