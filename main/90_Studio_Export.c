@@ -7,7 +7,7 @@
 void fg_studio_export_create(lv_obj_t *parent)
 {
     lv_obj_t * obj1 = lv_label_create(parent);
-    lv_label_set_text(obj1, "First flash from studio");
+    lv_label_set_text(obj1, "saturday is for the boys");
     lv_obj_set_pos(obj1, 292, 122);
     lv_obj_set_style_text_color(obj1, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_text_font(obj1, &lv_font_montserrat_24, 0);
